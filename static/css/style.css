@@ -1,0 +1,68 @@
+/* Custom Colors (as per design guidelines) */
+:root {
+    --primary: #0d6efd;
+    --secondary: #6c757d;
+}
+
+body {
+    /* Ensure proper height for sidebar layout */
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* Sidebar Styling */
+.sidebar {
+    min-height: 100vh;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
+    transition: width 0.3s ease, flex-basis 0.3s ease;
+}
+
+.nav-link {
+    transition: all 0.2s;
+    white-space: nowrap;
+    /* Prevent text wrapping during transition */
+    overflow: hidden;
+}
+
+.nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.nav-link.active {
+    background-color: var(--primary) !important;
+}
+
+/* Collapsed Sidebar State */
+.sidebar-collapsed {
+    flex: 0 0 auto;
+    width: 60px;
+    /* Width enough for icons */
+}
+
+/* Fix for inner container padding and alignment when collapsed */
+.sidebar-collapsed .sidebar-inner {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    align-items: center !important;
+}
+
+.sidebar-collapsed .nav-link span,
+.sidebar-collapsed .logo-text,
+.sidebar-collapsed .dropdown-toggle span {
+    display: none !important;
+}
+
+.sidebar-collapsed .dropdown-toggle::after {
+    display: none;
+}
+
+.sidebar-collapsed .nav-link {
+    text-align: center;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.sidebar-collapsed .bi {
+    margin: 0 !important;
+    font-size: 1.5rem;
+}

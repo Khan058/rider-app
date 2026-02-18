@@ -1,0 +1,47 @@
+{% extends 'administration/base.html' %}
+
+{% block title %}Dashboard - Rider Admin{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h1 class="display-5 fw-bold">Dashboard</h1>
+        <p class="lead">Welcome to the Rider Management Administration.</p>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Stat Card 1 -->
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title text-muted">Total Riders</h5>
+                <h2 class="card-text fw-bold">0</h2>
+                <a href="#" class="btn btn-primary btn-sm mt-2">View Riders</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stat Card 2 -->
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title text-muted">Active Bikes</h5>
+                <h2 class="card-text fw-bold">0</h2>
+                <a href="#" class="btn btn-outline-primary btn-sm mt-2">Manage Fleet</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stat Card 3 -->
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title text-muted">Today's Rides</h5>
+                <h2 class="card-text fw-bold">0</h2>
+                <a href="#" class="btn btn-outline-secondary btn-sm mt-2">View Reports</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
