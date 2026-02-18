@@ -12,35 +12,52 @@
         <button class="btn btn-outline-secondary me-2">
             <i class="bi bi-filter"></i> Filter
         </button>
-        <button class="btn btn-primary">
+        <a href="{% url 'register_rider' %}" class="btn btn-primary">
             <i class="bi bi-plus-lg"></i> Add New Rider
-        </button>
+        </a>
     </div>
 </div>
+
+{% if messages %}
+{% for message in messages %}
+<div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+    <i
+        class="bi {% if message.tags == 'success' %}bi-check-circle{% elif message.tags == 'danger' %}bi-exclamation-triangle{% else %}bi-info-circle{% endif %} me-2"></i>
+    {{ message }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+{% endfor %}
+{% endif %}
 
 <!-- Search and Tabs -->
 <div class="card mb-4 shadow-sm">
     <div class="card-body p-2">
         <div class="row align-items-center">
-            <div class="col-md-4">
-                <div class="input-group">
-                    <span class="input-group-text bg-transparent border-0"><i class="bi bi-search"></i></span>
-                    <input type="text" class="form-control border-0" placeholder="Search by name, ID, or vehicle...">
-                </div>
+            <div class="col-md-5">
+                <form method="GET" action="{% url 'riders' %}">
+                    <div class="input-group">
+                        <span class="input-group-text bg-transparent border-0"><i class="bi bi-search"></i></span>
+                        <input type="text" name="q" class="form-control border-0"
+                            placeholder="Search by name, email, or phone..." value="{{ search_query }}">
+                        {% if sort_option %}
+                        <input type="hidden" name="sort" value="{{ sort_option }}">
+                        {% endif %}
+                    </div>
+                </form>
             </div>
-            <div class="col-md-8 text-md-end mt-3 mt-md-0">
+            <div class="col-md-7 text-md-end mt-3 mt-md-0">
                 <ul class="nav nav-pills justify-content-md-end">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">All Riders</a>
+                        <a class="nav-link {% if not sort_option %}active{% endif %}" href="?q={{ search_query }}">All
+                            Riders</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Active Now</a>
+                        <a class="nav-link {% if sort_option == 'highest_rides' %}active{% endif %}"
+                            href="?sort=highest_rides&q={{ search_query }}">Highest Rides</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Top Rated</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Pending</a>
+                        <a class="nav-link {% if sort_option == 'lowest_rides' %}active{% endif %}"
+                            href="?sort=lowest_rides&q={{ search_query }}">Lowest Rides</a>
                     </li>
                 </ul>
             </div>
@@ -57,66 +74,100 @@
                 <div class="d-flex justify-content-between align-items-start mb-3">
                     <div class="d-flex align-items-center">
                         <div class="position-relative">
-                            <img src="{{ rider.avatar }}" alt="{{ rider.name }}" class="rounded-circle" width="50"
-                                height="50">
-                            <!-- Online Status Indicator (Mock) -->
+                            <!-- Mock Avatar using UI Avatars -->
+                            <img src="https://ui-avatars.com/api/?name={{ rider.full_name|urlencode }}&background=0D6EFD&color=fff"
+                                alt="{{ rider.full_name }}" class="rounded-circle" width="50" height="50">
                             <span
-                                class="position-absolute bottom-0 end-0 p-1 bg-success border border-white rounded-circle"></span>
+                                class="position-absolute bottom-0 end-0 p-1 bg-{{ rider.is_active|yesno:'success,danger' }} border border-white rounded-circle"></span>
                         </div>
                         <div class="ms-3">
-                            <h6 class="fw-bold mb-0 text-truncate" style="max-width: 140px;">{{ rider.name }}</h6>
-                            <!-- Rating Removed as per request -->
+                            <h6 class="fw-bold mb-0 text-truncate" style="max-width: 140px;"
+                                title="{{ rider.full_name }}">
+                                {{ rider.full_name }}
+                            </h6>
                             <small class="text-muted" style="font-size: 0.8rem;">
-                                {{ rider.reviews }} reviews
+                                {{ rider.email|truncatechars:20 }}
                             </small>
                         </div>
                     </div>
                 </div>
 
-                <!-- Stats -->
+                <!-- Stats (Mocked) -->
                 <div class="row text-center mt-3 mb-3 g-0">
                     <div class="col-6 border-end">
                         <p class="mb-0 text-muted small text-uppercase fw-bold" style="font-size: 0.7rem;">RIDES</p>
-                        <h5 class="fw-bold mb-0">{{ rider.rides }}</h5>
+                        <h5 class="fw-bold mb-0">{{ rider.rides_count }}</h5>
                     </div>
                     <div class="col-6">
                         <p class="mb-0 text-muted small text-uppercase fw-bold" style="font-size: 0.7rem;">EARNED</p>
-                        <h5 class="fw-bold mb-0 text-primary">{{ rider.earned }}</h5>
+                        <h5 class="fw-bold mb-0 text-primary">${{ rider.total_earnings }}</h5>
                     </div>
                 </div>
 
                 <!-- Footer Badges -->
                 <div class="d-flex justify-content-between align-items-center mt-auto">
                     <span
-                        class="badge bg-{{ rider.status_class }} bg-opacity-10 text-{{ rider.status_class }} fw-medium px-2 py-1">
-                        {{ rider.status }}
+                        class="badge bg-{{ rider.is_active|yesno:'success,danger' }} bg-opacity-10 text-{{ rider.is_active|yesno:'success,danger' }} fw-medium px-2 py-1">
+                        {{ rider.is_active|yesno:"Active,Inactive" }}
                     </span>
                     <span class="badge bg-secondary bg-opacity-10 text-secondary fw-medium px-2 py-1">
-                        {{ rider.vehicle }}
+                        {{ rider.license_number|default:"No License" }}
                     </span>
                 </div>
             </div>
         </div>
     </div>
+    {% empty %}
+    <div class="col-12 text-center py-5">
+        <h4 class="text-muted">No riders found.</h4>
+    </div>
     {% endfor %}
 </div>
 
-<!-- Pagination (Mock) -->
+<!-- Pagination -->
+{% if riders.has_other_pages %}
 <nav aria-label="Page navigation" class="mt-5 d-flex justify-content-between align-items-center">
-    <p class="text-muted mb-0">Showing <strong>1</strong> to <strong>8</strong> of <strong>248</strong> results</p>
+    <p class="text-muted mb-0">
+        Showing <strong>{{ riders.start_index }}</strong> to <strong>{{ riders.end_index }}</strong> of <strong>{{
+            riders.paginator.count }}</strong> results
+    </p>
     <ul class="pagination mb-0">
+        {% if riders.has_previous %}
+        <li class="page-item">
+            <a class="page-link"
+                href="?page={{ riders.previous_page_number }}&q={{ search_query }}&sort={{ sort_option }}">
+                <i class="bi bi-chevron-left"></i>
+            </a>
+        </li>
+        {% else %}
         <li class="page-item disabled">
             <a class="page-link" href="#" tabindex="-1" aria-disabled="true"><i class="bi bi-chevron-left"></i></a>
         </li>
-        <li class="page-item active"><a class="page-link" href="#">1</a></li>
-        <li class="page-item"><a class="page-link" href="#">2</a></li>
-        <li class="page-item"><a class="page-link" href="#">3</a></li>
-        <li class="page-item disabled"><a class="page-link" href="#">...</a></li>
-        <li class="page-item"><a class="page-link" href="#">31</a></li>
-        <li class="page-item">
-            <a class="page-link" href="#"><i class="bi bi-chevron-right"></i></a>
-        </li>
+        {% endif %}
+
+        {% for i in riders.paginator.page_range %}
+        {% if riders.number == i %}
+        <li class="page-item active"><a class="page-link" href="#">{{ i }}</a></li>
+        {% elif i > riders.number|add:'-3' and i < riders.number|add:'3' %} <li class="page-item">
+            <a class="page-link" href="?page={{ i }}&q={{ search_query }}&sort={{ sort_option }}">{{ i }}</a>
+            </li>
+            {% endif %}
+            {% endfor %}
+
+            {% if riders.has_next %}
+            <li class="page-item">
+                <a class="page-link"
+                    href="?page={{ riders.next_page_number }}&q={{ search_query }}&sort={{ sort_option }}">
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <a class="page-link" href="#" tabindex="-1" aria-disabled="true"><i class="bi bi-chevron-right"></i></a>
+            </li>
+            {% endif %}
     </ul>
 </nav>
+{% endif %}
 
 {% endblock %}

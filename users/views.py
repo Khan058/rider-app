@@ -2,100 +2,48 @@ from django.shortcuts import render
 
 def riders(request):
     """
-    Renders the Rider Profiles page with hardcoded data.
+    Renders the Rider Profiles page with real database data, search, and pagination.
     """
-    riders_data = [
-        {
-            'name': 'Alex Johnson',
-            'rides': '1,240',
-            'earned': '$3,450.00',
-            'status': 'Verified',
-            'status_class': 'success',
-            'vehicle': 'Sedan',
-            'avatar': 'https://i.pravatar.cc/150?u=alex',
-            'rating': 4.9, # Kept in data but won't be displayed
-            'reviews': 240
-        },
-        {
-            'name': 'Sarah Connor',
-            'rides': '980',
-            'earned': '$2,100.50',
-            'status': 'Verified',
-            'status_class': 'success',
-            'vehicle': 'Motorbike',
-            'avatar': 'https://i.pravatar.cc/150?u=sarah',
-            'rating': 4.8,
-            'reviews': 180
-        },
-        {
-            'name': 'Michael Chen',
-            'rides': '450',
-            'earned': '$1,200.00',
-            'status': 'Pending Docs',
-            'status_class': 'warning',
-            'vehicle': 'Scooter',
-            'avatar': 'https://i.pravatar.cc/150?u=michael',
-            'rating': 4.7,
-            'reviews': 95
-        },
-        {
-            'name': 'David Smith',
-            'rides': '2,100',
-            'earned': '$5,600.00',
-            'status': 'Verified',
-            'status_class': 'success',
-            'vehicle': 'Van',
-            'avatar': 'https://i.pravatar.cc/150?u=david',
-            'rating': 5.0,
-            'reviews': 520
-        },
-        {
-            'name': 'Emma Wilson',
-            'rides': '150',
-            'earned': '$450.00',
-            'status': 'Verified',
-            'status_class': 'success',
-            'vehicle': 'E-Bike',
-            'avatar': 'https://i.pravatar.cc/150?u=emma',
-            'rating': 4.6,
-            'reviews': 89
-        },
-        {
-            'name': 'James Rodriguez',
-            'rides': '3,400',
-            'earned': '$8,900.00',
-            'status': 'Verified',
-            'status_class': 'success',
-            'vehicle': 'SUV',
-            'avatar': 'https://i.pravatar.cc/150?u=james',
-            'rating': 4.9,
-            'reviews': 890
-        },
-        {
-            'name': 'Lisa Chang',
-            'rides': '890',
-            'earned': '$2,300.00',
-            'status': 'Verified',
-            'status_class': 'success',
-            'vehicle': 'Moped',
-            'avatar': 'https://i.pravatar.cc/150?u=lisa',
-            'rating': 4.8,
-            'reviews': 210
-        },
-        {
-            'name': 'Robert Taylor',
-            'rides': '1,670',
-            'earned': '$4,100.00',
-            'status': 'Verified',
-            'status_class': 'success',
-            'vehicle': 'Luxury',
-            'avatar': 'https://i.pravatar.cc/150?u=robert',
-            'rating': 4.9,
-            'reviews': 412
-        },
-    ]
-    
+    from django.core.paginator import Paginator
+    from .services import get_all_riders
+
+    search_query = request.GET.get('q', '')
+    sort_option = request.GET.get('sort', '')
+    page_number = request.GET.get('page', 1)
+
+    # Fetch data via service
+    riders_queryset = get_all_riders(search_query, sort_option)
+
+    # Pagination (10 per page)
+    paginator = Paginator(riders_queryset, 10)
+    page_obj = paginator.get_page(page_number)
+
     context = {
-        'riders': riders_data
+        'riders': page_obj,
+        'search_query': search_query,
+        'sort_option': sort_option,
     }
     return render(request, 'users/riders.html', context)
+
+def register_rider(request):
+    """
+    Handles the 4-step rider registration process.
+    View only orchestrates — validation is in forms, creation is in services.
+    """
+    from django.contrib import messages
+    from django.shortcuts import redirect
+    from .forms import RiderRegistrationForm
+    from .services import create_rider
+
+    if request.method == 'POST':
+        form = RiderRegistrationForm(request.POST, request.FILES)
+        user, error = create_rider(form)
+
+        if user:
+            messages.success(request, f"Rider '{user.full_name()}' registered successfully!")
+            return redirect('riders')
+
+        messages.error(request, error)
+        return render(request, 'users/rider_registration.html')
+
+    return render(request, 'users/rider_registration.html')

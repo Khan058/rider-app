@@ -9,16 +9,22 @@ class Custom_user(AbstractUser):
     email = models.EmailField(unique=True)
     phone = models.CharField(max_length=15, unique=True)
     address = models.CharField(max_length=100)
-    city = models.CharField(max_length=100)
-    state = models.CharField(max_length=100)
-    zip_code = models.CharField(max_length=100)
-    country = models.CharField(max_length=100)
+    picture = models.ImageField(upload_to="profile_pictures/", null=True, blank=True)
+    
+    # Keeping existing fields but allowing null/blank to avoid validation errors on existing data if needed
+    city = models.CharField(max_length=100, null=True, blank=True)
+    state = models.CharField(max_length=100, null=True, blank=True)
+    zip_code = models.CharField(max_length=100, null=True, blank=True)
+    country = models.CharField(max_length=100, null=True, blank=True)
+    
     license_number = models.CharField(max_length=100)
-    license_expiry_date = models.DateField()
-    license_image = models.ImageField(upload_to='licenses/')
+    license_expiry_date = models.DateField(null=True, blank=True)
+    license_image = models.ImageField(upload_to='licenses/', null=True, blank=True)
     ejari_number = models.CharField(max_length=100, null=True, blank=True)
     ejari_expiry_date = models.DateField(null=True, blank=True)
     ejari_image = models.ImageField(upload_to='ejaris/', null=True, blank=True)
+    
+    # Timestamps
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
 

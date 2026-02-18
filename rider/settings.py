@@ -132,3 +132,9 @@ STATICFILES_DIRS = [
 ]
 
 AUTH_USER_MODEL = 'users.Custom_user'
+
+# Django Messages → Bootstrap alert class mapping
+from django.contrib.messages import constants as message_constants
+MESSAGE_TAGS = {
+    message_constants.ERROR: 'danger',
+}
