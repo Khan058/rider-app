@@ -1,47 +1,453 @@
 {% extends 'administration/base.html' %}
+{% load static %}
 
 {% block title %}Dashboard - Rider Admin{% endblock %}
 
 {% block content %}
-<div class="row mb-4">
-    <div class="col-12">
-        <h1 class="display-5 fw-bold">Dashboard</h1>
-        <p class="lead">Welcome to the Rider Management Administration.</p>
+<div class="container-fluid py-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 fw-bold mb-0">Dashboard Overview</h1>
+            <p class="text-muted mb-0">Track daily rider performance and earnings.</p>
+        </div>
+        <div class="d-flex align-items-center gap-3">
+            <div class="dropdown">
+                <button class="btn btn-white bg-white shadow-sm border px-3 py-2 dropdown-toggle" type="button"
+                    id="dateRange" data-bs-toggle="dropdown">
+                    <i class="bi bi-calendar3 me-2 text-muted"></i> Today, Oct 24
+                </button>
+            </div>
+            <button class="btn btn-white bg-white shadow-sm border p-2 position-relative rounded-circle">
+                <i class="bi bi-bell fs-5 text-muted"></i>
+                <span
+                    class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle">
+                    <span class="visually-hidden">New alerts</span>
+                </span>
+            </button>
+        </div>
     </div>
+
+    <!-- Stats Cards Row -->
+    <div class="row g-4 mb-4">
+        <!-- Card 1: Today's Rides -->
+        <div class="col-md-4">
+            <div class="card card-stats bg-gradient-blue h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div class="icon-box">
+                            <i class="bi bi-bicycle fs-4"></i>
+                        </div>
+                        <span class="badge-trend">
+                            <i class="bi bi-arrow-up-short"></i> +12%
+                        </span>
+                    </div>
+                    <small class="opacity-75 text-uppercase fw-bold" style="font-size: 0.75rem;">Today's Rides</small>
+                    <h2 class="fw-bold mb-0 mt-1">1,245</h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 2: Today's Earnings -->
+        <div class="col-md-4">
+            <div class="card card-stats bg-gradient-green h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div class="icon-box">
+                            <i class="bi bi-currency-dollar fs-4"></i>
+                        </div>
+                        <span class="badge-trend">
+                            <i class="bi bi-arrow-up-short"></i> +5%
+                        </span>
+                    </div>
+                    <small class="opacity-75 text-uppercase fw-bold" style="font-size: 0.75rem;">Today's
+                        Earnings</small>
+                    <h2 class="fw-bold mb-0 mt-1">$14,320</h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 3: Active Riders -->
+        <div class="col-md-4">
+            <div class="card card-stats bg-gradient-orange h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div class="icon-box">
+                            <i class="bi bi-geo-alt fs-4"></i>
+                        </div>
+                        <span class="badge-trend">
+                            <i class="bi bi-arrow-down-short"></i> -2%
+                        </span>
+                    </div>
+                    <small class="opacity-75 text-uppercase fw-bold" style="font-size: 0.75rem;">Active Riders</small>
+                    <h2 class="fw-bold mb-0 mt-1">84</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="row g-4 mb-4">
+        <!-- Main Chart: Performance Analytics -->
+        <div class="col-lg-8">
+            <div class="card card-chart bg-white h-100">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div>
+                            <h5 class="fw-bold mb-1">Weekly Trends: Rides vs. Earnings</h5>
+                            <small class="text-muted">Comparing volume of rides against earnings revenue</small>
+                        </div>
+                        <div class="btn-group btn-group-sm" role="group" id="performanceFilters">
+                            <button type="button" class="btn btn-outline-secondary active"
+                                data-filter="weekly">Weekly</button>
+                            <button type="button" class="btn btn-outline-secondary"
+                                data-filter="monthly">Monthly</button>
+                            <button type="button" class="btn btn-outline-secondary" data-filter="3months">3
+                                Months</button>
+                            <button type="button" class="btn btn-outline-secondary" data-filter="6months">6
+                                Months</button>
+                            <button type="button" class="btn btn-outline-secondary" data-filter="1year">Annual</button>
+                        </div>
+                    </div>
+                    <div id="performanceChart" style="min-height: 350px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Side Chart: Comparisons -->
+        <div class="col-lg-4">
+            <div class="card card-chart bg-white h-100">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-4">Rides Volume</h5>
+                    <div class="d-flex justify-content-center align-items-center position-relative mb-4">
+                        <div id="volumeChart"></div>
+                        <!-- Center Text Overlay -->
+                        <div class="position-absolute text-center" style="pointer-events: none;">
+                            <h3 class="fw-bold mb-0">65%</h3>
+                            <small class="text-muted">Volume Share</small>
+                        </div>
+                    </div>
+                    <div class="row text-center mt-auto">
+                        <div class="col-6 border-end">
+                            <small class="text-muted d-block"><i
+                                    class="bi bi-circle-fill text-primary small me-1"></i>Today</small>
+                            <h4 class="fw-bold mt-1">1,245</h4>
+                        </div>
+                        <div class="col-6">
+                            <small class="text-muted d-block"><i
+                                    class="bi bi-circle-fill text-secondary small me-1"></i>Yesterday</small>
+                            <h4 class="fw-bold mt-1">670</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Section -->
+    <div class="row g-4">
+        <!-- Comparisons / Revenue Stream -->
+        <div class="col-lg-4">
+            <div class="card card-chart bg-white h-100 vertical-rider-card">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5 class="fw-bold mb-0">Revenue Stream</h5>
+                        <span class="badge bg-success bg-opacity-10 text-success">
+                            <i class="bi bi-arrow-up"></i> +18%
+                        </span>
+                    </div>
+                    <div id="revenueChart" style="min-height: 250px;"></div>
+                    <hr>
+                    <div class="row text-center mt-3">
+                        <div class="col-6 border-end">
+                            <small class="text-muted d-block">Yesterday</small>
+                            <h4 class="fw-bold mb-0 text-secondary">$10,500</h4>
+                        </div>
+                        <div class="col-6">
+                            <small class="text-muted d-block">Today</small>
+                            <h4 class="fw-bold mb-0 text-success">$12,450</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Riders List -->
+        <div class="col-lg-4">
+            <div class="card card-chart bg-white h-100 vertical-rider-card">
+                <div
+                    class="card-header bg-transparent border-0 pt-4 px-4 pb-0 d-flex justify-content-between align-items-center">
+                    <h5 class="fw-bold mb-0">Top Riders</h5>
+                    <a href="#" class="text-decoration-none small fw-bold">View All</a>
+                </div>
+                <div class="card-body p-0 pt-2">
+                    <div class="list-group list-group-flush">
+                        {% for i in "123456" %}
+                        <div class="list-group-item border-0 px-4 py-3 rider-list-item d-flex align-items-center">
+                            <div class="position-relative me-3">
+                                <img src="https://ui-avatars.com/api/?name=Rider+{{ i }}&background=random&color=fff"
+                                    class="rounded-circle" width="40" height="40">
+                                {% if forloop.first %}
+                                <span
+                                    class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning text-dark border border-white p-1"
+                                    style="font-size: 0.5rem;">
+                                    <i class="bi bi-trophy-fill"></i>
+                                </span>
+                                {% endif %}
+                            </div>
+                            <div class="flex-grow-1">
+                                <h6 class="fw-bold mb-0 fn-sm">Alex Johnson</h6>
+                                <small class="text-success fw-bold" style="font-size: 0.8rem;">Active</small>
+                            </div>
+                            <div class="text-end">
+                                <span class="d-block fw-bold text-dark small">1,240</span>
+                                <small class="text-muted" style="font-size: 0.7rem;">Rides</small>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Needs Attention List -->
+        <div class="col-lg-4">
+            <div class="card card-chart bg-white h-100 vertical-rider-card">
+                <div
+                    class="card-header bg-transparent border-0 pt-4 px-4 pb-0 d-flex justify-content-between align-items-center">
+                    <h5 class="fw-bold mb-0">Needs Attention</h5>
+                    <span class="badge bg-danger bg-opacity-10 text-danger">Actions Required</span>
+                </div>
+                <div class="card-body p-0 pt-2">
+                    <div class="list-group list-group-flush">
+                        {% for i in "123" %}
+                        <div class="list-group-item border-0 px-4 py-3 rider-list-item d-flex align-items-center">
+                            <div class="position-relative me-3">
+                                <img src="https://ui-avatars.com/api/?name=Problem+{{ i }}&background=dc3545&color=fff"
+                                    class="rounded-circle" width="40" height="40">
+                            </div>
+                            <div class="flex-grow-1">
+                                <h6 class="fw-bold mb-0 fn-sm">Sarah Connor</h6>
+                                <small class="text-danger fw-bold" style="font-size: 0.8rem;">0 Rides (7 Days)</small>
+                            </div>
+                            <button class="btn btn-sm btn-outline-secondary rounded-pill px-3">View</button>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
 </div>
+{% endblock %}
 
-<div class="row g-4">
-    <!-- Stat Card 1 -->
-    <div class="col-md-4">
-        <div class="card h-100 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title text-muted">Total Riders</h5>
-                <h2 class="card-text fw-bold">0</h2>
-                <a href="#" class="btn btn-primary btn-sm mt-2">View Riders</a>
-            </div>
-        </div>
-    </div>
+{% block extra_js %}
+<!-- ApexCharts CDN -->
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
-    <!-- Stat Card 2 -->
-    <div class="col-md-4">
-        <div class="card h-100 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title text-muted">Active Bikes</h5>
-                <h2 class="card-text fw-bold">0</h2>
-                <a href="#" class="btn btn-outline-primary btn-sm mt-2">Manage Fleet</a>
-            </div>
-        </div>
-    </div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // --- 1. Performance Analytics (Area Chart) ---
+        // Hardcoded Data Sets
+        var performanceData = {
+            'weekly': {
+                categories: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+                series: [
+                    { name: 'Rides', data: [31, 40, 28, 51, 42, 109, 100] },
+                    { name: 'Earnings ($)', data: [11, 32, 45, 32, 34, 52, 41] }
+                ]
+            },
+            'monthly': {
+                categories: ["Week 1", "Week 2", "Week 3", "Week 4"],
+                series: [
+                    { name: 'Rides', data: [250, 320, 280, 410] },
+                    { name: 'Earnings ($)', data: [1200, 1500, 1300, 1800] }
+                ]
+            },
+            '3months': {
+                categories: ["Aug", "Sep", "Oct"],
+                series: [
+                    { name: 'Rides', data: [1100, 1250, 1400] },
+                    { name: 'Earnings ($)', data: [5500, 6200, 7100] }
+                ]
+            },
+            '6months': {
+                categories: ["May", "Jun", "Jul", "Aug", "Sep", "Oct"],
+                series: [
+                    { name: 'Rides', data: [900, 950, 1000, 1100, 1250, 1400] },
+                    { name: 'Earnings ($)', data: [4500, 4800, 5200, 5500, 6200, 7100] }
+                ]
+            },
+            '1year': {
+                categories: ["Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct"],
+                series: [
+                    { name: 'Rides', data: [800, 850, 820, 900, 950, 1000, 900, 950, 1000, 1100, 1250, 1400] },
+                    { name: 'Earnings ($)', data: [4000, 4200, 4100, 4500, 4800, 5000, 4500, 4800, 5200, 5500, 6200, 7100] }
+                ]
+            }
+        };
 
-    <!-- Stat Card 3 -->
-    <div class="col-md-4">
-        <div class="card h-100 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title text-muted">Today's Rides</h5>
-                <h2 class="card-text fw-bold">0</h2>
-                <a href="#" class="btn btn-outline-secondary btn-sm mt-2">View Reports</a>
-            </div>
-        </div>
-    </div>
-</div>
+        var optionsPerformance = {
+            series: performanceData.weekly.series,
+            chart: {
+                height: 350,
+                type: 'area',
+                toolbar: { show: false },
+                fontFamily: 'inherit'
+            },
+            dataLabels: { enabled: false },
+            stroke: {
+                curve: 'smooth',
+                width: 3
+            },
+            xaxis: {
+                categories: performanceData.weekly.categories,
+                axisBorder: { show: false },
+                axisTicks: { show: false }
+            },
+            yaxis: {
+                show: false
+            },
+            colors: ['#775ada', '#4099ff'],
+            fill: {
+                type: 'gradient',
+                gradient: {
+                    shadeIntensity: 1,
+                    opacityFrom: 0.7,
+                    opacityTo: 0.3,
+                    stops: [0, 90, 100]
+                }
+            },
+            grid: {
+                borderColor: '#f1f1f1',
+                strokeDashArray: 4,
+            },
+            tooltip: {
+                theme: 'light'
+            }
+        };
+
+        var chartPerformance = new ApexCharts(document.querySelector("#performanceChart"), optionsPerformance);
+        chartPerformance.render();
+
+        // Event Listeners for Filters
+        document.querySelectorAll('#performanceFilters button').forEach(button => {
+            button.addEventListener('click', function () {
+                // Remove active class from all
+                document.querySelectorAll('#performanceFilters button').forEach(btn => btn.classList.remove('active'));
+                // Add active class to clicked
+                this.classList.add('active');
+
+                // Update Chart
+                var filter = this.getAttribute('data-filter');
+                var data = performanceData[filter];
+                if (data) {
+                    chartPerformance.updateOptions({
+                        xaxis: {
+                            categories: data.categories
+                        },
+                        series: data.series
+                    });
+                }
+            });
+        });
+
+
+        // --- 2. Rides Volume (Radial/Donut) ---
+        var optionsVolume = {
+            series: [65, 35],
+            labels: ['Today', 'Yesterday'],
+            chart: {
+                type: 'donut',
+                height: 280,
+                fontFamily: 'inherit'
+            },
+            plotOptions: {
+                pie: {
+                    donut: {
+                        size: '75%',
+                        labels: { show: false }
+                    }
+                }
+            },
+            dataLabels: { enabled: false },
+            legend: { show: false },
+            colors: ['#4099ff', '#e9ecef'],
+            stroke: { width: 0 },
+            tooltip: {
+                theme: 'light'
+            }
+        };
+
+        var chartVolume = new ApexCharts(document.querySelector("#volumeChart"), optionsVolume);
+        chartVolume.render();
+
+        // --- 3. Revenue Stream (Bar Chart: Yesterday vs Today) ---
+        var optionsRevenue = {
+            series: [{
+                name: 'Revenue',
+                data: [10500, 12450] // Yesterday vs Today
+            }],
+            chart: {
+                type: 'bar',
+                height: 250,
+                toolbar: { show: false },
+                fontFamily: 'inherit'
+            },
+            plotOptions: {
+                bar: {
+                    horizontal: false,
+                    columnWidth: '40%',
+                    borderRadius: 5,
+                    distributed: true // Different colors for columns
+                },
+            },
+            dataLabels: { enabled: false },
+            legend: { show: false },
+            stroke: {
+                show: true,
+                width: 2,
+                colors: ['transparent']
+            },
+            xaxis: {
+                categories: ['Yesterday', 'Today'],
+                axisBorder: { show: false },
+                axisTicks: { show: false },
+                labels: { style: { fontSize: '12px' } }
+            },
+            yaxis: {
+                show: true,
+                labels: {
+                    formatter: function (val) {
+                        return "$" + val.toLocaleString();
+                    }
+                }
+            },
+            colors: ['#6c757d', '#2ed8b6'], // Gray for Yesterday, Green for Today
+            grid: {
+                show: true,
+                strokeDashArray: 4,
+                padding: {
+                    top: 0,
+                    right: 0,
+                    bottom: 0,
+                    left: 10
+                }
+            },
+            tooltip: {
+                theme: 'light',
+                y: {
+                    formatter: function (val) {
+                        return "$" + val.toLocaleString()
+                    }
+                }
+            }
+        };
+
+        var chartRevenue = new ApexCharts(document.querySelector("#revenueChart"), optionsRevenue);
+        chartRevenue.render();
+    });
+</script>
 {% endblock %}
