@@ -64,80 +64,88 @@ body {
 
 .sidebar-collapsed .bi {
     margin: 0 !important;
+}
 
-    /* --- Dashboard Styles --- */
+.cursor-pointer {
+    cursor: pointer !important;
+}
 
-    /* Gradient Backgrounds */
-    .bg-gradient-blue {
-        background: linear-gradient(45deg, #4099ff, #73b4ff);
-        color: white;
-    }
+.dashboard-date-input {
+    max-width: 140px;
+}
 
-    .bg-gradient-green {
-        background: linear-gradient(45deg, #2ed8b6, #59e0c5);
-        color: white;
-    }
+/* --- Dashboard Styles --- */
 
-    .bg-gradient-orange {
-        background: linear-gradient(45deg, #FFB64D, #ffcb80);
-        color: white;
-    }
+/* Gradient Backgrounds */
+.bg-gradient-blue {
+    background: linear-gradient(45deg, #4099ff, #73b4ff);
+    color: white;
+}
 
-    .bg-gradient-purple {
-        background: linear-gradient(45deg, #775ada, #9d84ea);
-        color: white;
-    }
+.bg-gradient-green {
+    background: linear-gradient(45deg, #2ed8b6, #59e0c5);
+    color: white;
+}
 
-    /* Stats Cards */
-    .card-stats {
-        border: none;
-        border-radius: 15px;
-        box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.05);
-        transition: transform 0.3s ease;
-    }
+.bg-gradient-orange {
+    background: linear-gradient(45deg, #FFB64D, #ffcb80);
+    color: white;
+}
 
-    .card-stats:hover {
-        transform: translateY(-5px);
-    }
+.bg-gradient-purple {
+    background: linear-gradient(45deg, #775ada, #9d84ea);
+    color: white;
+}
 
-    .icon-box {
-        width: 45px;
-        height: 45px;
-        border-radius: 10px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: rgba(255, 255, 255, 0.2);
-    }
+/* Stats Cards */
+.card-stats {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease;
+}
 
-    /* Chart & Content Cards */
-    .card-chart {
-        border: none;
-        border-radius: 15px;
-        box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.05);
-    }
+.card-stats:hover {
+    transform: translateY(-5px);
+}
 
-    /* Badges */
-    .badge-trend {
-        padding: 5px 10px;
-        border-radius: 20px;
-        font-weight: 500;
-        font-size: 0.8rem;
-        background: rgba(255, 255, 255, 0.2);
-        backdrop-filter: blur(5px);
-    }
+.icon-box {
+    width: 45px;
+    height: 45px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.2);
+}
 
-    /* Rider List Items */
-    .rider-list-item {
-        transition: background-color 0.2s;
-    }
+/* Chart & Content Cards */
+.card-chart {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.05);
+}
 
-    .rider-list-item:hover {
-        background-color: #f8f9fa;
-    }
+/* Badges */
+.badge-trend {
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-weight: 500;
+    font-size: 0.8rem;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(5px);
+}
 
-    .vertical-rider-card {
-        min-height: 400px;
-        /* Force height for vertical look */
-    }
+/* Rider List Items */
+.rider-list-item {
+    transition: background-color 0.2s;
+}
+
+.rider-list-item:hover {
+    background-color: #f8f9fa;
+}
+
+.vertical-rider-card {
+    min-height: 400px;
+    /* Force height for vertical look */
 }

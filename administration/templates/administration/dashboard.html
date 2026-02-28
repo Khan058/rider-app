@@ -3,6 +3,13 @@
 
 {% block title %}Dashboard - Rider Admin{% endblock %}
 
+{% block extra_css %}
+<!-- Tempus Dominus Styles -->
+<link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.9.4/dist/css/tempus-dominus.min.css"
+    crossorigin="anonymous">
+{% endblock %}
+
 {% block content %}
 <div class="container-fluid py-4">
     <!-- Header -->
@@ -12,11 +19,15 @@
             <p class="text-muted mb-0">Track daily rider performance and earnings.</p>
         </div>
         <div class="d-flex align-items-center gap-3">
-            <div class="dropdown">
-                <button class="btn btn-white bg-white shadow-sm border px-3 py-2 dropdown-toggle" type="button"
-                    id="dateRange" data-bs-toggle="dropdown">
-                    <i class="bi bi-calendar3 me-2 text-muted"></i> Today, Oct 24
-                </button>
+            <div class="input-group shadow-sm w-auto" id="dashboardDatePicker" data-td-target-input="nearest"
+                data-td-target-toggle="nearest">
+                <span class="input-group-text bg-white border-end-0 py-2 cursor-pointer"
+                    data-td-target="#dashboardDatePicker" data-td-toggle="datetimepicker">
+                    <i class="bi bi-calendar3 text-muted"></i>
+                </span>
+                <input type="text"
+                    class="form-control bg-white border-start-0 border py-2 fw-medium cursor-pointer dashboard-date-input"
+                    id="dateInput" data-td-target="#dashboardDatePicker" data-td-toggle="datetimepicker" readonly>
             </div>
             <button class="btn btn-white bg-white shadow-sm border p-2 position-relative rounded-circle">
                 <i class="bi bi-bell fs-5 text-muted"></i>
@@ -244,11 +255,59 @@
 {% endblock %}
 
 {% block extra_js %}
+<!-- Popperjs -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+    crossorigin="anonymous"></script>
+<!-- Tempus Dominus JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.9.4/dist/js/tempus-dominus.min.js"
+    crossorigin="anonymous"></script>
+
 <!-- ApexCharts CDN -->
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
+        // --- 0. Date Picker Initialization ---
+        const dashboardPickerEl = document.getElementById('dashboardDatePicker');
+        if (dashboardPickerEl) {
+            const picker = new tempusDominus.TempusDominus(dashboardPickerEl, {
+                localization: {
+                    format: 'MMM dd, yyyy'
+                },
+                display: {
+                    components: {
+                        clock: false,
+                        hours: false,
+                        minutes: false,
+                        seconds: false
+                    },
+                    icons: {
+                        type: 'icons',
+                        time: 'bi bi-clock',
+                        date: 'bi bi-calendar',
+                        up: 'bi bi-arrow-up',
+                        down: 'bi bi-arrow-down',
+                        previous: 'bi bi-chevron-left',
+                        next: 'bi bi-chevron-right',
+                        today: 'bi bi-calendar-check',
+                        clear: 'bi bi-trash',
+                        close: 'bi bi-x'
+                    }
+                }
+            });
+            // Set to today's date
+            picker.dates.setValue(new tempusDominus.DateTime());
+
+            // Open the datepicker when the readonly input is clicked
+            const dateInput = document.getElementById('dateInput');
+            if (dateInput) {
+                dateInput.addEventListener('click', () => {
+                    const icon = document.querySelector('#dashboardDatePicker .input-group-text');
+                    if (icon) icon.click();
+                });
+            }
+        }
+
         // --- 1. Performance Analytics (Area Chart) ---
         // Hardcoded Data Sets
         var performanceData = {
