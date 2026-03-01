@@ -45,6 +45,20 @@
                             </a>
                         </li>
                         <li class="nav-item w-100">
+                            <a href="{% url 'tenants' %}"
+                                class="nav-link text-white align-middle px-0 {% if request.resolver_match.url_name == 'tenants' %}active{% endif %}">
+                                <i class="fs-4 bi-building ms-2"></i> <span
+                                    class="ms-1 d-none d-sm-inline">Tenants</span>
+                            </a>
+                        </li>
+                        <li class="nav-item w-100">
+                            <a href="{% url 'apartments' %}"
+                                class="nav-link text-white align-middle px-0 {% if request.resolver_match.url_name == 'apartments' %}active{% endif %}">
+                                <i class="fs-4 bi-house-door ms-2"></i> <span
+                                    class="ms-1 d-none d-sm-inline">Apartments</span>
+                            </a>
+                        </li>
+                        <li class="nav-item w-100">
                             <a href="#" class="nav-link text-white align-middle px-0">
                                 <i class="fs-4 bi-bicycle ms-2"></i> <span class="ms-1 d-none d-sm-inline">Bikes</span>
                             </a>

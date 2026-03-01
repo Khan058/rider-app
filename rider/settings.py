@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'users',
     "administration",
     'bikes',
+    'appartments',
 ]
 
 MIDDLEWARE = [

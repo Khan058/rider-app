@@ -8,26 +8,26 @@ from .models import Custom_user
 logger = logging.getLogger(__name__)
 
 
-def create_rider(form):
+def create_user(form):
     """
-    Creates a new rider from validated form data.
+    Creates a new user (Rider or Tenant) from validated form data.
     Returns a tuple of (user, error_message).
     - On success: (user, None)
     - On failure: (None, error_string)
     """
     if not form.is_valid():
-        # Collect all validation errors into a single readable string
         errors = "; ".join(
             f"{field}: {', '.join(msgs)}"
             for field, msgs in form.errors.items()
         )
-        logger.warning("Rider registration validation failed: %s", errors)
+        logger.warning("User registration validation failed: %s", errors)
         return None, errors
 
     data = form.cleaned_data
     user = Custom_user.objects.create_user(
-        username=data['email'],  # Use email as username
+        username=data['email'],
         password='DefaultPassword123!',
+        user_type=data.get('user_type', 'RIDER'),
         email=data['email'],
         first_name=data['first_name'],
         last_name=data['last_name'],
@@ -42,24 +42,26 @@ def create_rider(form):
         ejari_image=data.get('ejari_image'),
     )
 
-    logger.info("Rider registered successfully: %s", user.email)
+    logger.info("User (%s) registered successfully: %s", user.user_type, user.email)
     return user, None
 
 
-def get_all_riders(search_query=None, sort_option=None):
+def get_all_riders(search_query=None, sort_option=None, user_type=None):
     """
-    Fetches all riders (Custom_user) with search and sorting.
+    Fetches users with search, sorting, and optional type filtering.
     Annotates mock metrics (rides, earnings) since Ride app is not yet implemented.
     """
     from django.db.models import Q, Value, IntegerField, DecimalField
-    
-    # Base queryset - active users excluding superusers/staff if needed, 
-    # but for now let's just get all Custom_users who are not superusers
+
     queryset = Custom_user.objects.filter(is_superuser=False).annotate(
         rides_count=Value(0, output_field=IntegerField()),
         total_earnings=Value(0.00, output_field=DecimalField(max_digits=10, decimal_places=2)),
-        avg_rating=Value(5.0, output_field=DecimalField(max_digits=3, decimal_places=1)) # Mock rating
+        avg_rating=Value(5.0, output_field=DecimalField(max_digits=3, decimal_places=1)),
     )
+
+    # Filter by user type if specified
+    if user_type:
+        queryset = queryset.filter(user_type=user_type)
 
     # Search
     if search_query:
@@ -77,7 +79,6 @@ def get_all_riders(search_query=None, sort_option=None):
     elif sort_option == 'lowest_rides':
         queryset = queryset.order_by('rides_count', '-date_joined')
     else:
-        # Default sort
         queryset = queryset.order_by('-date_joined')
 
     return queryset
