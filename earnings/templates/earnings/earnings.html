@@ -1,0 +1,477 @@
+{% extends 'administration/base.html' %}
+{% load static %}
+
+{% block title %}Earnings - Rider Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4" style="min-width: 0;">
+
+    <!-- Page Header -->
+    <div class="mb-4">
+        <h1 class="h3 fw-bold mb-1">Earnings Overview</h1>
+        <p class="text-muted mb-0">Real-time performance tracking for fleet and property management</p>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- RIDER EARNINGS SECTION                          -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px;">
+        <div class="card-body p-4">
+
+            <!-- Section Title -->
+            <div class="d-flex align-items-center gap-2 mb-4">
+                <i class="bi bi-bicycle fs-5" style="color: var(--rider-accent);"></i>
+                <h5 class="fw-bold mb-0">Rider Earnings</h5>
+            </div>
+
+            <!-- 3 Stat Cards -->
+            <div class="row g-3 mb-4">
+                <!-- Daily -->
+                <div class="col-md-4">
+                    <div class="border rounded-3 p-3" style="background: #f8f9fa;">
+                        <small class="text-uppercase fw-bold text-muted d-block mb-1"
+                            style="font-size: 0.65rem; letter-spacing: 0.5px;">1 Day Earnings</small>
+                        <div class="d-flex align-items-end gap-2">
+                            <h4 class="fw-bold mb-0">{{ daily_earnings }}</h4>
+                            <span class="badge bg-success bg-opacity-10 text-success fw-bold rounded-pill"
+                                style="font-size: 0.7rem;">{{ daily_change }}</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Weekly -->
+                <div class="col-md-4">
+                    <div class="border rounded-3 p-3" style="background: #f8f9fa;">
+                        <small class="text-uppercase fw-bold text-muted d-block mb-1"
+                            style="font-size: 0.65rem; letter-spacing: 0.5px;">Weekly Earnings</small>
+                        <div class="d-flex align-items-end gap-2">
+                            <h4 class="fw-bold mb-0">{{ weekly_earnings }}</h4>
+                            <span class="badge bg-success bg-opacity-10 text-success fw-bold rounded-pill"
+                                style="font-size: 0.7rem;">{{ weekly_change }}</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Monthly (highlighted) -->
+                <div class="col-md-4">
+                    <div class="rounded-3 p-3 text-white position-relative" style="background: var(--rider-accent);">
+                        <small class="text-uppercase fw-bold d-block mb-1"
+                            style="font-size: 0.65rem; letter-spacing: 0.5px; opacity: 0.85;">Monthly Earnings</small>
+                        <div class="d-flex align-items-end justify-content-between">
+                            <h4 class="fw-bold mb-0">{{ monthly_earnings }}</h4>
+                            <div class="dropdown">
+                                <button class="btn btn-sm text-white border-0 dropdown-toggle fw-bold px-2 py-0"
+                                    type="button" data-bs-toggle="dropdown" aria-expanded="false"
+                                    style="font-size: 0.75rem; background: rgba(255,255,255,0.2);">
+                                    3 Months
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
+                                    <li><a class="dropdown-item small" href="#">1 Month</a></li>
+                                    <li><a class="dropdown-item small active" href="#">3 Months</a></li>
+                                    <li><a class="dropdown-item small" href="#">6 Months</a></li>
+                                    <li><a class="dropdown-item small" href="#">12 Months</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Earnings Trends Chart -->
+            <div class="border rounded-3 p-4 mb-4" style="background: #fff;">
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-3">
+                    <h6 class="fw-bold mb-0">Earnings Trends</h6>
+                    <div class="d-flex flex-wrap gap-1" role="group" id="earningsTrendsFilters">
+                        <button type="button" class="btn btn-sm btn-outline-secondary"
+                            data-filter="daily">Daily</button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary"
+                            data-filter="weekly">Weekly</button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary active" data-filter="monthly"
+                            style="background: var(--rider-accent); border-color: var(--rider-accent); color: #fff;">Monthly</button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" data-filter="3m">3M</button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" data-filter="6m">6M</button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" data-filter="12m">12M</button>
+                    </div>
+                </div>
+                <div id="earningsTrendsChart" style="min-height: 280px;"></div>
+            </div>
+
+            <div class="mb-4">
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-3">
+                    <h6 class="fw-bold mb-0">Top Performing Riders</h6>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-borderless align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th class="text-uppercase text-muted fw-bold"
+                                    style="font-size: 0.65rem; letter-spacing: 0.5px;">Rider Name</th>
+                                <th class="text-uppercase text-muted fw-bold text-center"
+                                    style="font-size: 0.65rem; letter-spacing: 0.5px;">Total Rides</th>
+                                <th class="text-uppercase text-muted fw-bold text-end"
+                                    style="font-size: 0.65rem; letter-spacing: 0.5px;">Total Earnings</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for rider in top_riders %}
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span
+                                            class="d-flex align-items-center justify-content-center rounded-circle fw-bold text-white"
+                                            style="width: 36px; height: 36px; font-size: 0.75rem; background: var(--rider-accent);">{{
+                                            rider.initials }}</span>
+                                        <span class="fw-medium">{{ rider.name }}</span>
+                                    </div>
+                                </td>
+                                <td class="text-center fw-medium">{{ rider.total_rides }}</td>
+                                <td class="text-end fw-bold" style="color: var(--rider-accent);">{{ rider.total_earnings
+                                    }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Divider -->
+            <hr class="my-4">
+
+            <!-- All Riders -->
+            <div>
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-3">
+                    <h6 class="fw-bold mb-0">All Riders</h6>
+                    <div class="d-flex flex-wrap align-items-center gap-2">
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle rounded-pill px-3 fw-medium"
+                                type="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-calendar3 me-1"></i> Monthly
+                            </button>
+                            <ul class="dropdown-menu shadow-sm border-0">
+                                <li><a class="dropdown-item small" href="#">Daily</a></li>
+                                <li><a class="dropdown-item small" href="#">Weekly</a></li>
+                                <li><a class="dropdown-item small active" href="#">Monthly</a></li>
+                            </ul>
+                        </div>
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle rounded-pill px-3 fw-medium"
+                                type="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-sort-down me-1"></i> Highest Earnings
+                            </button>
+                            <ul class="dropdown-menu shadow-sm border-0">
+                                <li><a class="dropdown-item small active" href="#">Highest Earnings</a></li>
+                                <li><a class="dropdown-item small" href="#">Lowest Earnings</a></li>
+                                <li><a class="dropdown-item small" href="#">Highest Rides</a></li>
+                                <li><a class="dropdown-item small" href="#">Lowest Rides</a></li>
+                                <li><a class="dropdown-item small" href="#">Alphabetical</a></li>
+                            </ul>
+                        </div>
+                        <div class="input-group input-group-sm" style="max-width: 220px;">
+                            <span class="input-group-text bg-white border-end-0"><i
+                                    class="bi bi-search text-muted"></i></span>
+                            <input type="text" class="form-control border-start-0 ps-0" placeholder="Search riders..."
+                                id="allRidersSearch">
+                        </div>
+                    </div>
+                </div>
+                <div class="table-responsive" style="max-height: 320px; overflow-y: auto;">
+                    <table class="table table-borderless align-middle mb-0">
+                        <thead style="position: sticky; top: 0; background: #fff; z-index: 1;">
+                            <tr>
+                                <th class="text-uppercase text-muted fw-bold"
+                                    style="font-size: 0.65rem; letter-spacing: 0.5px;">Rider Name</th>
+                                <th class="text-uppercase text-muted fw-bold text-center"
+                                    style="font-size: 0.65rem; letter-spacing: 0.5px;">Total Rides</th>
+                                <th class="text-uppercase text-muted fw-bold text-end"
+                                    style="font-size: 0.65rem; letter-spacing: 0.5px;">Total Earnings</th>
+                            </tr>
+                        </thead>
+                        <tbody id="allRidersBody">
+                            {% for rider in all_riders %}
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span
+                                            class="d-flex align-items-center justify-content-center rounded-circle fw-bold text-white"
+                                            style="width: 36px; height: 36px; font-size: 0.75rem; background: var(--rider-accent);">{{
+                                            rider.initials }}</span>
+                                        <span class="fw-medium">{{ rider.name }}</span>
+                                    </div>
+                                </td>
+                                <td class="text-center fw-medium">{{ rider.total_rides }}</td>
+                                <td class="text-end fw-bold" style="color: var(--rider-accent);">{{ rider.total_earnings
+                                    }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- TENANT EARNINGS SECTION                         -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px;">
+        <div class="card-body p-4">
+
+            <!-- Section Title -->
+            <div class="d-flex align-items-center gap-2 mb-4">
+                <i class="bi bi-building fs-5" style="color: var(--rider-accent);"></i>
+                <h5 class="fw-bold mb-0">Tenant Earnings</h5>
+            </div>
+
+            <!-- 3 Stat Cards -->
+            <div class="row g-3 mb-4">
+                <!-- Total Rent Paid -->
+                <div class="col-md-4">
+                    <div class="border rounded-3 p-3" style="background: #f8f9fa;">
+                        <small class="text-uppercase fw-bold text-muted d-block mb-1"
+                            style="font-size: 0.65rem; letter-spacing: 0.5px;">Total Rent Paid</small>
+                        <h4 class="fw-bold mb-1">{{ total_rent_paid }}</h4>
+                        <small class="text-success fw-medium" style="font-size: 0.7rem;"><i
+                                class="bi bi-arrow-up-short"></i> {{ rent_vs_last_month }}</small>
+                    </div>
+                </div>
+                <!-- Paid Tenants -->
+                <div class="col-md-4">
+                    <div class="border rounded-3 p-3" style="background: #f8f9fa;">
+                        <small class="text-uppercase fw-bold text-muted d-block mb-1"
+                            style="font-size: 0.65rem; letter-spacing: 0.5px;">Paid Tenants</small>
+                        <h4 class="fw-bold mb-1">{{ paid_tenants }}</h4>
+                        <small class="text-muted fw-medium" style="font-size: 0.7rem;">out of {{ paid_tenants_total }}
+                            total units</small>
+                    </div>
+                </div>
+                <!-- Pending Payments (highlighted danger) -->
+                <div class="col-md-4">
+                    <div class="border rounded-3 p-3" style="background: #FFF5F5; border-color: #FECACA !important;">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <small class="text-uppercase fw-bold text-danger d-block mb-1"
+                                    style="font-size: 0.65rem; letter-spacing: 0.5px;">Pending Payments</small>
+                                <h4 class="fw-bold mb-1 text-danger">{{ pending_payments }}</h4>
+                                <small class="text-muted fw-medium" style="font-size: 0.7rem;">Estimated value: {{
+                                    pending_estimated }}</small>
+                            </div>
+                            <button class="btn btn-sm text-white fw-bold rounded-pill px-3"
+                                style="background: var(--rider-accent); font-size: 0.7rem;">Remind All</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Billing + Yearly Rent Chart -->
+            <div class="row g-4">
+                <!-- Recent Apartment Billing -->
+                <div class="col-lg-5">
+                    <div
+                        class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-3">
+                        <h6 class="fw-bold mb-0">Recent Apartment Billing</h6>
+                        <div class="input-group input-group-sm" style="max-width: 220px;">
+                            <span class="input-group-text bg-white border-end-0"><i
+                                    class="bi bi-search text-muted"></i></span>
+                            <input type="text" class="form-control border-start-0 ps-0" placeholder="Search..."
+                                id="billingSearch">
+                        </div>
+                    </div>
+                    <div class="d-flex flex-column gap-3" id="billingList" style="max-height: 320px; overflow-y: auto;">
+                        {% for bill in recent_billing %}
+                        <div
+                            class="d-flex align-items-center justify-content-between border rounded-3 p-3 billing-item">
+                            <div class="text-truncate pe-3">
+                                <h6 class="fw-bold mb-0 text-truncate billing-name" style="font-size: 0.85rem;">{{
+                                    bill.name }}</h6>
+                                <small class="text-muted" style="font-size: 0.7rem;">Paid on {{ bill.paid_on }}</small>
+                            </div>
+                            <span class="fw-bold text-nowrap" style="font-size: 0.9rem;">{{ bill.amount }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <!-- Yearly Rent Collection Chart -->
+                <div class="col-lg-7">
+                    <h6 class="fw-bold mb-3">Yearly Rent Collection</h6>
+                    <div id="yearlyRentChart" style="min-height: 250px;"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center py-3 border-top mt-4">
+        <div class="d-flex align-items-center gap-2 mb-2 mb-md-0">
+            <span class="d-flex align-items-center justify-content-center rounded-2 text-white fw-bold"
+                style="width: 28px; height: 28px; font-size: 0.7rem; background: var(--rider-accent);">R</span>
+            <small class="text-muted fw-medium">RiderTenant Platform v2.4</small>
+        </div>
+        <div class="d-flex flex-wrap gap-3">
+            <a href="#" class="text-muted text-decoration-none small fw-medium">Reports</a>
+            <a href="#" class="text-muted text-decoration-none small fw-medium">Tax Center</a>
+            <a href="#" class="text-muted text-decoration-none small fw-medium">Support</a>
+            <a href="#" class="text-muted text-decoration-none small fw-medium">Privacy</a>
+        </div>
+        <small class="text-muted mt-2 mt-md-0">© 2025 Earnings Management Systems Inc.</small>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- ApexCharts CDN -->
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        // ─── CSS Variable for accent color ───
+        const accent = getComputedStyle(document.documentElement).getPropertyValue('--rider-accent').trim() || '#E8601C';
+
+        // ═══════════════════════════════════════
+        // 1. Earnings Trends Bar Chart
+        // ═══════════════════════════════════════
+        const trendsData = {
+            'daily': {
+                categories: ["6AM", "9AM", "12PM", "3PM", "6PM", "9PM"],
+                data: [120, 280, 350, 290, 410, 180]
+            },
+            'weekly': {
+                categories: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+                data: [380, 420, 350, 480, 520, 700, 650]
+            },
+            'monthly': {
+                categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+                data: [2800, 3200, 2600, 3500, 4100, 3700, 4800, 5200, 6100, 7500, 8200, 9500]
+            },
+            '3m': {
+                categories: ["Aug", "Sep", "Oct"],
+                data: [5200, 6100, 7500]
+            },
+            '6m': {
+                categories: ["May", "Jun", "Jul", "Aug", "Sep", "Oct"],
+                data: [4100, 3700, 4800, 5200, 6100, 7500]
+            },
+            '12m': {
+                categories: ["Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct"],
+                data: [2200, 2500, 2800, 3200, 2600, 3500, 4100, 3700, 4800, 5200, 6100, 7500]
+            }
+        };
+
+        const trendsOptions = {
+            series: [{ name: 'Earnings', data: trendsData.monthly.data }],
+            chart: { type: 'bar', height: 280, toolbar: { show: false }, fontFamily: 'inherit' },
+            plotOptions: {
+                bar: { borderRadius: 4, columnWidth: '55%' }
+            },
+            colors: [accent],
+            xaxis: {
+                categories: trendsData.monthly.categories,
+                axisBorder: { show: false },
+                axisTicks: { show: false },
+                labels: { style: { fontSize: '11px', colors: '#999' } }
+            },
+            yaxis: { show: false },
+            grid: { borderColor: '#f1f1f1', strokeDashArray: 4 },
+            dataLabels: { enabled: false },
+            tooltip: { theme: 'light' }
+        };
+
+        const trendsChart = new ApexCharts(document.querySelector("#earningsTrendsChart"), trendsOptions);
+        trendsChart.render();
+
+        // Filter buttons
+        document.querySelectorAll('#earningsTrendsFilters button').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                document.querySelectorAll('#earningsTrendsFilters button').forEach(function (b) {
+                    b.classList.remove('active');
+                    b.style.background = '';
+                    b.style.borderColor = '';
+                    b.style.color = '';
+                });
+                this.classList.add('active');
+                this.style.background = accent;
+                this.style.borderColor = accent;
+                this.style.color = '#fff';
+
+                const filter = this.getAttribute('data-filter');
+                const d = trendsData[filter];
+                if (d) {
+                    trendsChart.updateOptions({
+                        xaxis: { categories: d.categories },
+                        series: [{ name: 'Earnings', data: d.data }]
+                    });
+                }
+            });
+        });
+
+        // ═══════════════════════════════════════
+        // 2. Yearly Rent Collection Bar Chart
+        // ═══════════════════════════════════════
+        const yearlyRentOptions = {
+            series: [{
+                name: 'Collected',
+                data: [10500, 11200, 12800, 11900, 13500, 14200, 12000, 14500, 13200, 15800, 16200, 15000]
+            }, {
+                name: 'Pending',
+                data: [1800, 2200, 1500, 2000, 1200, 900, 2400, 1500, 2800, 1200, 800, 1100]
+            }],
+            chart: { type: 'bar', height: 250, stacked: true, toolbar: { show: false }, fontFamily: 'inherit' },
+            plotOptions: {
+                bar: { borderRadius: 4, columnWidth: '50%' }
+            },
+            colors: [accent, '#E5E7EB'],
+            xaxis: {
+                categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                axisBorder: { show: false },
+                axisTicks: { show: false },
+                labels: { style: { fontSize: '11px', colors: '#999' } }
+            },
+            yaxis: { show: false },
+            grid: { borderColor: '#f1f1f1', strokeDashArray: 4 },
+            dataLabels: { enabled: false },
+            legend: { show: false },
+            tooltip: { theme: 'light' }
+        };
+
+        const yearlyRentChart = new ApexCharts(document.querySelector("#yearlyRentChart"), yearlyRentOptions);
+        yearlyRentChart.render();
+
+        // ═══════════════════════════════════════
+        // 3. Client-Side Search (with debounce)
+        // ═══════════════════════════════════════
+        function debounce(fn, delay) {
+            let timer;
+            return function () {
+                clearTimeout(timer);
+                timer = setTimeout(() => fn.apply(this, arguments), delay);
+            };
+        }
+
+        // All Riders search
+        const ridersSearch = document.getElementById('allRidersSearch');
+        if (ridersSearch) {
+            ridersSearch.addEventListener('input', debounce(function () {
+                const query = this.value.toLowerCase();
+                document.querySelectorAll('#allRidersBody tr').forEach(function (row) {
+                    const name = row.querySelector('td')?.textContent.toLowerCase() || '';
+                    row.style.display = name.includes(query) ? '' : 'none';
+                });
+            }, 300));
+        }
+
+        // Billing search
+        const billingSearchInput = document.getElementById('billingSearch');
+        if (billingSearchInput) {
+            billingSearchInput.addEventListener('input', debounce(function () {
+                const query = this.value.toLowerCase();
+                document.querySelectorAll('#billingList .billing-item').forEach(function (item) {
+                    const name = item.querySelector('.billing-name')?.textContent.toLowerCase() || '';
+                    item.style.display = name.includes(query) ? '' : 'none';
+                });
+            }, 300));
+        }
+
+    });
+</script>
+{% endblock %}

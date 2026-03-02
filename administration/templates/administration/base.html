@@ -65,7 +65,8 @@
                             </a>
                         </li>
                         <li class="nav-item w-100">
-                            <a href="#" class="nav-link text-white align-middle px-0">
+                            <a href="{% url 'earnings' %}"
+                                class="nav-link text-white align-middle px-0 {% if request.resolver_match.url_name == 'earnings' %}active{% endif %}">
                                 <i class="fs-4 bi-cash-coin ms-2"></i> <span
                                     class="ms-1 d-none d-sm-inline">Earnings</span>
                             </a>
