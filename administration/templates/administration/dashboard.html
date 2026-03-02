@@ -40,58 +40,124 @@
     </div>
 
     <!-- Stats Cards Row -->
-    <div class="row g-4 mb-4">
-        <!-- Card 1: Today's Rides -->
-        <div class="col-md-4">
-            <div class="card card-stats bg-gradient-blue h-100">
-                <div class="card-body">
+    <div class="row row-cols-1 row-cols-md-3 row-cols-xl-5 g-4 mb-4">
+        <!-- Card 1: Today's Rides (Blue) -->
+        <div class="col">
+            <div class="card card-stats bg-primary text-white h-100 border-0 shadow-sm"
+                style="border-radius: 12px; background: #407BFF !important;">
+                <div class="card-body p-4">
                     <div class="d-flex justify-content-between align-items-start mb-3">
-                        <div class="icon-box">
-                            <i class="bi bi-bicycle fs-4"></i>
+                        <div
+                            class="border border-white border-opacity-25 rounded p-2 d-flex align-items-center justify-content-center">
+                            <i class="bi bi-truck fs-5"></i>
                         </div>
-                        <span class="badge-trend">
+                        <span class="badge bg-white bg-opacity-25 text-white fw-medium rounded-pill px-2 py-1">
                             <i class="bi bi-arrow-up-short"></i> +12%
                         </span>
                     </div>
-                    <small class="opacity-75 text-uppercase fw-bold" style="font-size: 0.75rem;">Today's Rides</small>
-                    <h2 class="fw-bold mb-0 mt-1">1,245</h2>
+                    <small class="text-uppercase fw-bold text-white-50 letter-spacing-1"
+                        style="font-size: 0.7rem;">Today's Rides</small>
+                    <h2 class="fw-bold mb-0 mt-1 display-6">1,245</h2>
                 </div>
             </div>
         </div>
 
-        <!-- Card 2: Today's Earnings -->
-        <div class="col-md-4">
-            <div class="card card-stats bg-gradient-green h-100">
-                <div class="card-body">
+        <!-- Card 2: Total Earnings (Indigo) -->
+        <div class="col">
+            <div class="card card-stats text-white h-100 border-0 shadow-sm"
+                style="border-radius: 12px; background: #5A45FF !important;">
+                <div class="card-body p-4">
                     <div class="d-flex justify-content-between align-items-start mb-3">
-                        <div class="icon-box">
-                            <i class="bi bi-currency-dollar fs-4"></i>
+                        <div
+                            class="border border-white border-opacity-25 rounded p-2 d-flex align-items-center justify-content-center">
+                            <i class="bi bi-currency-dollar fs-5"></i>
                         </div>
-                        <span class="badge-trend">
+                        <div class="dropdown">
+                            <button
+                                class="btn btn-sm btn-light bg-white bg-opacity-25 text-white border-0 dropdown-toggle rounded-pill px-3 py-1 fw-bold"
+                                type="button" data-bs-toggle="dropdown" aria-expanded="false"
+                                style="font-size: 0.7rem;">
+                                Daily
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0" id="earningsDropdown">
+                                <li><a class="dropdown-item active fn-sm fw-medium" href="#" data-value="Daily"
+                                        data-amount="$14,320">Daily</a></li>
+                                <li><a class="dropdown-item fn-sm fw-medium" href="#" data-value="Weekly"
+                                        data-amount="$86,500">Weekly</a></li>
+                                <li><a class="dropdown-item fn-sm fw-medium" href="#" data-value="Monthly"
+                                        data-amount="$342,100">Monthly</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <small class="text-uppercase fw-bold text-white-50 letter-spacing-1"
+                        style="font-size: 0.7rem;">Rider Earnings</small>
+                    <h2 class="fw-bold mb-0 mt-1 display-6" id="totalEarningsDisplay">$14,320</h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 3: Total Apartments (Green) -->
+        <div class="col">
+            <div class="card card-stats text-white h-100 border-0 shadow-sm"
+                style="border-radius: 12px; background: #20C475 !important;">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div
+                            class="border border-white border-opacity-25 rounded p-2 d-flex align-items-center justify-content-center">
+                            <i class="bi bi-building fs-5"></i>
+                        </div>
+                    </div>
+                    <small class="text-uppercase fw-bold text-white-50 letter-spacing-1"
+                        style="font-size: 0.7rem;">Total Apartments</small>
+                    <h2 class="fw-bold mb-0 mt-1 display-6">{{ total_apartments }}</h2>
+                    <span class="badge bg-white text-dark fw-bold rounded-pill px-3 py-1 mt-2">
+                        {{ occupied_apartments }} Occupied
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 4: Rent Payments (Teal) -->
+        <div class="col">
+            <div class="card card-stats text-white h-100 border-0 shadow-sm"
+                style="border-radius: 12px; background: #13BFA6 !important;">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div
+                            class="border border-white border-opacity-25 rounded p-2 d-flex align-items-center justify-content-center">
+                            <i class="bi bi-cash fs-5"></i>
+                        </div>
+                        <span class="badge bg-white bg-opacity-25 text-white fw-medium rounded-pill px-2 py-1">
                             <i class="bi bi-arrow-up-short"></i> +5%
                         </span>
                     </div>
-                    <small class="opacity-75 text-uppercase fw-bold" style="font-size: 0.75rem;">Today's
-                        Earnings</small>
-                    <h2 class="fw-bold mb-0 mt-1">$14,320</h2>
+                    <small class="text-uppercase fw-bold text-white-50 letter-spacing-1" style="font-size: 0.7rem;">Rent
+                        Payments</small>
+                    <h2 class="fw-bold mb-0 mt-1 display-6">{{ rent_paid_count }} Paid</h2>
+                    <span class="badge bg-white text-dark fw-bold rounded-pill px-3 py-1 mt-2">
+                        {{ rent_outstanding_count }} Outstanding
+                    </span>
                 </div>
             </div>
         </div>
 
-        <!-- Card 3: Active Riders -->
-        <div class="col-md-4">
-            <div class="card card-stats bg-gradient-orange h-100">
-                <div class="card-body">
+        <!-- Card 5: Active Riders (Orange) -->
+        <div class="col">
+            <div class="card card-stats text-white h-100 border-0 shadow-sm"
+                style="border-radius: 12px; background: #FF9243 !important;">
+                <div class="card-body p-4">
                     <div class="d-flex justify-content-between align-items-start mb-3">
-                        <div class="icon-box">
-                            <i class="bi bi-geo-alt fs-4"></i>
+                        <div
+                            class="border border-white border-opacity-25 rounded p-2 d-flex align-items-center justify-content-center">
+                            <i class="bi bi-geo-alt fs-5"></i>
                         </div>
-                        <span class="badge-trend">
+                        <span class="badge bg-white bg-opacity-25 text-white fw-medium rounded-pill px-2 py-1">
                             <i class="bi bi-arrow-down-short"></i> -2%
                         </span>
                     </div>
-                    <small class="opacity-75 text-uppercase fw-bold" style="font-size: 0.75rem;">Active Riders</small>
-                    <h2 class="fw-bold mb-0 mt-1">84</h2>
+                    <small class="text-uppercase fw-bold text-white-50 letter-spacing-1"
+                        style="font-size: 0.7rem;">Active Riders</small>
+                    <h2 class="fw-bold mb-0 mt-1 display-6">{{ active_riders_count }}</h2>
                 </div>
             </div>
         </div>
@@ -155,93 +221,187 @@
         </div>
     </div>
 
-    <!-- Bottom Section -->
-    <div class="row g-4">
-        <!-- Comparisons / Revenue Stream -->
-        <div class="col-lg-4">
-            <div class="card card-chart bg-white h-100 vertical-rider-card">
+    <!-- Revenue Stream Full-Width Chart -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card card-chart bg-white h-100 border-0 shadow-sm" style="border-radius: 12px;">
                 <div class="card-body p-4">
                     <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h5 class="fw-bold mb-0">Revenue Stream</h5>
-                        <span class="badge bg-success bg-opacity-10 text-success">
-                            <i class="bi bi-arrow-up"></i> +18%
-                        </span>
-                    </div>
-                    <div id="revenueChart" style="min-height: 250px;"></div>
-                    <hr>
-                    <div class="row text-center mt-3">
-                        <div class="col-6 border-end">
-                            <small class="text-muted d-block">Yesterday</small>
-                            <h4 class="fw-bold mb-0 text-secondary">$10,500</h4>
+                        <div>
+                            <h5 class="fw-bold mb-1">Revenue Stream</h5>
+                            <small class="text-muted">Detailed breakdown of income sources over time</small>
                         </div>
-                        <div class="col-6">
-                            <small class="text-muted d-block">Today</small>
-                            <h4 class="fw-bold mb-0 text-success">$12,450</h4>
+                        <div class="btn-group btn-group-sm" role="group" id="revenueFilters">
+                            <button type="button" class="btn btn-outline-secondary" data-filter="daily">Daily</button>
+                            <button type="button" class="btn btn-outline-secondary active"
+                                data-filter="weekly">Weekly</button>
+                            <button type="button" class="btn btn-outline-secondary"
+                                data-filter="monthly">Monthly</button>
+                            <button type="button" class="btn btn-outline-secondary" data-filter="3months">3
+                                Months</button>
+                            <button type="button" class="btn btn-outline-secondary" data-filter="6months">6
+                                Months</button>
+                            <button type="button" class="btn btn-outline-secondary" data-filter="1year">Annual</button>
                         </div>
                     </div>
+                    <div id="fullRevenueChart" style="min-height: 250px;"></div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- Top Riders List -->
-        <div class="col-lg-4">
-            <div class="card card-chart bg-white h-100 vertical-rider-card">
+    <!-- Bottom Section: 3 Lists -->
+    <div class="row g-4 mb-4">
+        <!-- Column 1: Top Riders -->
+        <div class="col-xl-4 col-lg-4">
+            <div class="card card-chart bg-white h-100 border-0 shadow-sm" style="border-radius: 12px;">
                 <div
-                    class="card-header bg-transparent border-0 pt-4 px-4 pb-0 d-flex justify-content-between align-items-center">
+                    class="card-header bg-transparent border-0 pt-4 px-4 pb-2 d-flex justify-content-between align-items-center">
                     <h5 class="fw-bold mb-0">Top Riders</h5>
-                    <a href="#" class="text-decoration-none small fw-bold">View All</a>
+                    <a href="#" class="text-decoration-none small fw-bold text-primary">View All</a>
                 </div>
-                <div class="card-body p-0 pt-2">
+                <div class="card-body p-0 pt-2 pb-3">
                     <div class="list-group list-group-flush">
-                        {% for i in "123456" %}
-                        <div class="list-group-item border-0 px-4 py-3 rider-list-item d-flex align-items-center">
+                        <div class="list-group-item border-0 px-4 py-3 d-flex align-items-center bg-transparent">
                             <div class="position-relative me-3">
-                                <img src="https://ui-avatars.com/api/?name=Rider+{{ i }}&background=random&color=fff"
-                                    class="rounded-circle" width="40" height="40">
-                                {% if forloop.first %}
                                 <span
-                                    class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning text-dark border border-white p-1"
-                                    style="font-size: 0.5rem;">
-                                    <i class="bi bi-trophy-fill"></i>
-                                </span>
-                                {% endif %}
+                                    class="d-flex align-items-center justify-content-center rounded-circle bg-light fw-bold text-dark border"
+                                    style="width: 45px; height: 45px; font-size: 0.85rem;">R1</span>
+                                <span
+                                    class="position-absolute top-0 start-100 translate-middle p-1 bg-warning border border-light rounded-circle"
+                                    style="width: 12px; height: 12px;"></span>
                             </div>
                             <div class="flex-grow-1">
-                                <h6 class="fw-bold mb-0 fn-sm">Alex Johnson</h6>
-                                <small class="text-success fw-bold" style="font-size: 0.8rem;">Active</small>
+                                <h6 class="fw-bold mb-0 text-dark">Alex Johnson</h6>
+                                <small class="text-success fw-bold text-uppercase"
+                                    style="font-size: 0.7rem; letter-spacing: 0.5px;">Active</small>
                             </div>
                             <div class="text-end">
-                                <span class="d-block fw-bold text-dark small">1,240</span>
-                                <small class="text-muted" style="font-size: 0.7rem;">Rides</small>
+                                <span class="d-block fw-bold text-dark fs-5">1,240</span>
+                                <small class="text-muted text-uppercase fw-bold"
+                                    style="font-size: 0.65rem;">Rides</small>
                             </div>
                         </div>
-                        {% endfor %}
+                        <div class="list-group-item border-0 px-4 py-3 d-flex align-items-center bg-transparent">
+                            <div class="position-relative me-3">
+                                <span
+                                    class="d-flex align-items-center justify-content-center rounded-circle bg-light fw-bold text-dark border"
+                                    style="width: 45px; height: 45px; font-size: 0.85rem;">R2</span>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h6 class="fw-bold mb-0 text-dark">Jordan Smith</h6>
+                                <small class="text-success fw-bold text-uppercase"
+                                    style="font-size: 0.7rem; letter-spacing: 0.5px;">Active</small>
+                            </div>
+                            <div class="text-end">
+                                <span class="d-block fw-bold text-dark fs-5">1,150</span>
+                                <small class="text-muted text-uppercase fw-bold"
+                                    style="font-size: 0.65rem;">Rides</small>
+                            </div>
+                        </div>
+                        <div class="list-group-item border-0 px-4 py-3 d-flex align-items-center bg-transparent">
+                            <div class="position-relative me-3">
+                                <span
+                                    class="d-flex align-items-center justify-content-center rounded-circle bg-light fw-bold text-dark border"
+                                    style="width: 45px; height: 45px; font-size: 0.85rem;">R3</span>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h6 class="fw-bold mb-0 text-dark">Mila Kunis</h6>
+                                <small class="text-success fw-bold text-uppercase"
+                                    style="font-size: 0.7rem; letter-spacing: 0.5px;">Active</small>
+                            </div>
+                            <div class="text-end">
+                                <span class="d-block fw-bold text-dark fs-5">980</span>
+                                <small class="text-muted text-uppercase fw-bold"
+                                    style="font-size: 0.65rem;">Rides</small>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Needs Attention List -->
-        <div class="col-lg-4">
-            <div class="card card-chart bg-white h-100 vertical-rider-card">
+        <!-- Column 2: Needs Attention: Riders -->
+        <div class="col-xl-4 col-lg-4">
+            <div class="card card-chart bg-white h-100 border-0 shadow-sm" style="border-radius: 12px;">
                 <div
-                    class="card-header bg-transparent border-0 pt-4 px-4 pb-0 d-flex justify-content-between align-items-center">
-                    <h5 class="fw-bold mb-0">Needs Attention</h5>
-                    <span class="badge bg-danger bg-opacity-10 text-danger">Actions Required</span>
+                    class="card-header bg-transparent border-0 pt-4 px-4 pb-2 d-flex justify-content-between align-items-center">
+                    <h5 class="fw-bold mb-0">Needs Attention: Riders</h5>
+                    <span class="badge bg-danger bg-opacity-10 text-danger text-uppercase fw-bold letter-spacing-1 p-2"
+                        style="font-size: 0.65rem;">Action Required</span>
                 </div>
-                <div class="card-body p-0 pt-2">
-                    <div class="list-group list-group-flush">
-                        {% for i in "123" %}
-                        <div class="list-group-item border-0 px-4 py-3 rider-list-item d-flex align-items-center">
+                <div class="card-body p-0 pt-2 pb-3">
+                    <div class="list-group list-group-flush gap-2 px-3">
+                        <div class="list-group-item border rounded-3 px-3 py-3 d-flex align-items-center shadow-sm">
                             <div class="position-relative me-3">
-                                <img src="https://ui-avatars.com/api/?name=Problem+{{ i }}&background=dc3545&color=fff"
-                                    class="rounded-circle" width="40" height="40">
+                                <span
+                                    class="d-flex align-items-center justify-content-center rounded-circle text-white fw-bold"
+                                    style="width: 45px; height: 45px; font-size: 0.9rem; background: #FF5A5F;">P1</span>
                             </div>
                             <div class="flex-grow-1">
-                                <h6 class="fw-bold mb-0 fn-sm">Sarah Connor</h6>
-                                <small class="text-danger fw-bold" style="font-size: 0.8rem;">0 Rides (7 Days)</small>
+                                <h6 class="fw-bold mb-0 text-dark">Sarah Connor</h6>
+                                <small class="text-danger fw-bold" style="font-size: 0.7rem;">0 Rides (7 Days)</small>
                             </div>
-                            <button class="btn btn-sm btn-outline-secondary rounded-pill px-3">View</button>
+                            <button class="btn btn-sm btn-outline-secondary rounded-pill px-3 py-1 fw-bold"
+                                style="font-size: 0.8rem;">View</button>
+                        </div>
+                        <div class="list-group-item border rounded-3 px-3 py-3 d-flex align-items-center shadow-sm">
+                            <div class="position-relative me-3">
+                                <span
+                                    class="d-flex align-items-center justify-content-center rounded-circle text-white fw-bold"
+                                    style="width: 45px; height: 45px; font-size: 0.9rem; background: #FF5A5F;">P2</span>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h6 class="fw-bold mb-0 text-dark">John Wick</h6>
+                                <small class="text-danger fw-bold" style="font-size: 0.7rem;">0 Rides (7 Days)</small>
+                            </div>
+                            <button class="btn btn-sm btn-outline-secondary rounded-pill px-3 py-1 fw-bold"
+                                style="font-size: 0.8rem;">View</button>
+                        </div>
+                        <div class="list-group-item border rounded-3 px-3 py-3 d-flex align-items-center shadow-sm">
+                            <div class="position-relative me-3">
+                                <span
+                                    class="d-flex align-items-center justify-content-center rounded-circle text-white fw-bold"
+                                    style="width: 45px; height: 45px; font-size: 0.9rem; background: #FF8A8E;">P3</span>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h6 class="fw-bold mb-0 text-dark">Rick Deckard</h6>
+                                <small class="text-danger fw-bold" style="font-size: 0.7rem;">0 Rides (7 Days)</small>
+                            </div>
+                            <button class="btn btn-sm btn-outline-secondary rounded-pill px-3 py-1 fw-bold"
+                                style="font-size: 0.8rem;">View</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Column 3: Needs Attention: Tenants -->
+        <div class="col-xl-4 col-lg-4">
+            <div class="card card-chart bg-white h-100 border-0 shadow-sm" style="border-radius: 12px;">
+                <div
+                    class="card-header bg-transparent border-0 pt-4 px-4 pb-2 d-flex justify-content-between align-items-center">
+                    <h5 class="fw-bold mb-0">Needs Attention:<br>Tenants</h5>
+                    <span class="badge text-uppercase fw-bold letter-spacing-1 p-2 text-start"
+                        style="font-size: 0.65rem; background: #E6F8F5; color: #13BFA6;">Payment<br>Overdue</span>
+                </div>
+                <div class="card-body p-0 pt-2 pb-3">
+                    <div class="list-group list-group-flush gap-2 px-3">
+                        {% for tenant in needs_attention_tenants %}
+                        <div class="list-group-item border rounded-3 px-3 py-3 d-flex align-items-center shadow-sm">
+                            <div class="position-relative me-3">
+                                <span
+                                    class="d-flex align-items-center justify-content-center text-white fw-bold shadow-sm"
+                                    style="width: 40px; height: 40px; border-radius: 8px; font-size: 0.85rem; background: #13BFA6;">{{
+                                    tenant.initials }}</span>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h6 class="fw-bold mb-0 text-dark fn-sm">{{ tenant.name }}</h6>
+                                <small class="text-danger fw-bold text-uppercase" style="font-size: 0.65rem;">{{
+                                    tenant.overdue_days }} Days Overdue</small>
+                            </div>
+                            <button class="btn text-white rounded px-3 py-1 fw-bold shadow-sm"
+                                style="font-size: 0.75rem; background: #13BFA6;">Send Reminder</button>
                         </div>
                         {% endfor %}
                     </div>
@@ -443,70 +603,128 @@
         var chartVolume = new ApexCharts(document.querySelector("#volumeChart"), optionsVolume);
         chartVolume.render();
 
-        // --- 3. Revenue Stream (Bar Chart: Yesterday vs Today) ---
-        var optionsRevenue = {
-            series: [{
-                name: 'Revenue',
-                data: [10500, 12450] // Yesterday vs Today
-            }],
-            chart: {
-                type: 'bar',
-                height: 250,
-                toolbar: { show: false },
-                fontFamily: 'inherit'
+        // --- 4. Earnings Dropdown Logic ---
+        const earningsDropdownItems = document.querySelectorAll('#earningsDropdown .dropdown-item');
+        const totalEarningsDisplay = document.getElementById('totalEarningsDisplay');
+
+        earningsDropdownItems.forEach(item => {
+            item.addEventListener('click', function (e) {
+                e.preventDefault();
+                // Update active state
+                earningsDropdownItems.forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+
+                // Update button text
+                const btn = this.closest('.dropdown').querySelector('.dropdown-toggle');
+                btn.textContent = this.getAttribute('data-value');
+
+                // Update display amount
+                totalEarningsDisplay.textContent = this.getAttribute('data-amount');
+            });
+        });
+
+        // --- 5. Revenue Stream Full Width Chart ---
+        var revenueData = {
+            'daily': {
+                categories: ["6 AM", "9 AM", "12 PM", "3 PM", "6 PM", "9 PM"],
+                series: [
+                    { name: 'Today', data: [80, 150, 200, 180, 250, 120] },
+                    { name: 'Yesterday', data: [20, 50, 80, 70, 110, 60] }
+                ]
             },
-            plotOptions: {
-                bar: {
-                    horizontal: false,
-                    columnWidth: '40%',
-                    borderRadius: 5,
-                    distributed: true // Different colors for columns
-                },
+            'weekly': {
+                categories: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+                series: [
+                    { name: 'This Week', data: [400, 450, 420, 500, 550, 800, 750] },
+                    { name: 'Last Week', data: [200, 220, 210, 250, 280, 300, 290] }
+                ]
             },
-            dataLabels: { enabled: false },
-            legend: { show: false },
-            stroke: {
-                show: true,
-                width: 2,
-                colors: ['transparent']
+            'monthly': {
+                categories: ["Week 1", "Week 2", "Week 3", "Week 4"],
+                series: [
+                    { name: 'This Month', data: [1800, 2100, 1900, 2400] },
+                    { name: 'Last Month', data: [900, 1100, 950, 1200] }
+                ]
             },
-            xaxis: {
-                categories: ['Yesterday', 'Today'],
-                axisBorder: { show: false },
-                axisTicks: { show: false },
-                labels: { style: { fontSize: '12px' } }
+            '3months': {
+                categories: ["Month 1", "Month 2", "Month 3"],
+                series: [
+                    { name: 'Last 3 Months', data: [7500, 8200, 9100] },
+                    { name: 'Previous 3 Months', data: [4000, 4300, 4800] }
+                ]
             },
-            yaxis: {
-                show: true,
-                labels: {
-                    formatter: function (val) {
-                        return "$" + val.toLocaleString();
-                    }
-                }
+            '6months': {
+                categories: ["M1", "M2", "M3", "M4", "M5", "M6"],
+                series: [
+                    { name: 'Last 6 Months', data: [7000, 7500, 8200, 8000, 8500, 9100] },
+                    { name: 'Previous 6 Months', data: [3800, 4000, 4300, 4200, 4500, 4800] }
+                ]
             },
-            colors: ['#6c757d', '#2ed8b6'], // Gray for Yesterday, Green for Today
-            grid: {
-                show: true,
-                strokeDashArray: 4,
-                padding: {
-                    top: 0,
-                    right: 0,
-                    bottom: 0,
-                    left: 10
-                }
-            },
-            tooltip: {
-                theme: 'light',
-                y: {
-                    formatter: function (val) {
-                        return "$" + val.toLocaleString()
-                    }
-                }
+            '1year': {
+                categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+                series: [
+                    { name: 'This Year', data: [7000, 7200, 7500, 7800, 8200, 8000, 8300, 8500, 8800, 9100, 9500, 10000] },
+                    { name: 'Last Year', data: [3800, 3900, 4000, 4100, 4300, 4200, 4400, 4500, 4600, 4800, 5000, 5200] }
+                ]
             }
         };
 
-        var chartRevenue = new ApexCharts(document.querySelector("#revenueChart"), optionsRevenue);
-        chartRevenue.render();
+        var optionsFullRevenue = {
+            series: revenueData.weekly.series,
+            chart: {
+                height: 300,
+                type: 'line',
+                toolbar: { show: false },
+                fontFamily: 'inherit'
+            },
+            stroke: {
+                width: [3, 3],
+                curve: 'smooth',
+                dashArray: [4, 0] // First series (Rider Fees) is dashed, Second (Rent) is solid
+            },
+            colors: ['#5A45FF', '#13BFA6'], // Purple and Teal
+            xaxis: {
+                categories: revenueData.weekly.categories,
+                axisBorder: { show: false },
+                axisTicks: { show: false }
+            },
+            yaxis: { show: false },
+            grid: {
+                borderColor: '#f1f1f1',
+                strokeDashArray: 4,
+            },
+            legend: {
+                position: 'bottom',
+                horizontalAlign: 'left',
+                markers: { offsetX: -4, offsetY: 0, radius: 12 },
+                fontWeight: 600,
+                fontSize: '12px',
+                itemMargin: { horizontal: 15, vertical: 0 }
+            },
+            dataLabels: { enabled: false },
+            tooltip: { theme: 'light' }
+        };
+
+        var chartFullRevenue = new ApexCharts(document.querySelector("#fullRevenueChart"), optionsFullRevenue);
+        chartFullRevenue.render();
+
+        // Event Listeners for Revenue Filters
+        document.querySelectorAll('#revenueFilters button').forEach(button => {
+            button.addEventListener('click', function () {
+                document.querySelectorAll('#revenueFilters button').forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+
+                var filter = this.getAttribute('data-filter');
+                var data = revenueData[filter];
+                if (data) {
+                    chartFullRevenue.updateOptions({
+                        xaxis: { categories: data.categories },
+                        series: data.series
+                    });
+                }
+            });
+        });
+
     });
 </script>
 {% endblock %}
