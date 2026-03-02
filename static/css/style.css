@@ -12,9 +12,29 @@ body {
 
 /* Sidebar Styling */
 .sidebar {
+    position: sticky;
+    top: 0;
     min-height: 100vh;
+    max-height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    z-index: 1000;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
     transition: width 0.3s ease, flex-basis 0.3s ease;
+}
+
+/* Sidebar Custom Scrollbar */
+.sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+    background: transparent;
 }
 
 .nav-link {

@@ -93,7 +93,7 @@
             </div>
 
             <!-- Main Content -->
-            <div class="col py-3">
+            <div class="col py-3" style="min-width: 0; overflow-x: hidden;">
                 <header class="mb-3 d-flex align-items-center">
                     <button class="btn btn-outline-secondary" id="sidebarToggle">
                         <i class="bi bi-list"></i>
@@ -128,15 +128,25 @@
             const sidebar = document.getElementById('sidebar');
             const toggleBtn = document.getElementById('sidebarToggle');
 
+            // Toggle sidebar on button click
             toggleBtn.addEventListener('click', function () {
                 sidebar.classList.toggle('sidebar-collapsed');
-
-                // Toggle between full column width and auto width logic if needed, 
-                // but .sidebar-collapsed css handles width override.
-                // We might want to remove specific col classes if they conflict, 
-                // but col-md-3 with flex-nowrap usually works okay. 
-                // For smoother transition, we just rely on CSS width overrides.
             });
+
+            // Auto-collapse sidebar if screen is smaller than 768px (md breakpoint)
+            function checkWidth() {
+                if (window.innerWidth < 768) {
+                    sidebar.classList.add('sidebar-collapsed');
+                } else {
+                    sidebar.classList.remove('sidebar-collapsed');
+                }
+            }
+
+            // Check immediately on load
+            checkWidth();
+
+            // Re-check when window is resized
+            window.addEventListener('resize', checkWidth);
         });
     </script>
     <script>

@@ -3,32 +3,17 @@
 
 {% block title %}Dashboard - Rider Admin{% endblock %}
 
-{% block extra_css %}
-<!-- Tempus Dominus Styles -->
-<link rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.9.4/dist/css/tempus-dominus.min.css"
-    crossorigin="anonymous">
-{% endblock %}
+
 
 {% block content %}
 <div class="container-fluid py-4">
     <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
         <div>
             <h1 class="h3 fw-bold mb-0">Dashboard Overview</h1>
             <p class="text-muted mb-0">Track daily rider performance and earnings.</p>
         </div>
         <div class="d-flex align-items-center gap-3">
-            <div class="input-group shadow-sm w-auto" id="dashboardDatePicker" data-td-target-input="nearest"
-                data-td-target-toggle="nearest">
-                <span class="input-group-text bg-white border-end-0 py-2 cursor-pointer"
-                    data-td-target="#dashboardDatePicker" data-td-toggle="datetimepicker">
-                    <i class="bi bi-calendar3 text-muted"></i>
-                </span>
-                <input type="text"
-                    class="form-control bg-white border-start-0 border py-2 fw-medium cursor-pointer dashboard-date-input"
-                    id="dateInput" data-td-target="#dashboardDatePicker" data-td-toggle="datetimepicker" readonly>
-            </div>
             <button class="btn btn-white bg-white shadow-sm border p-2 position-relative rounded-circle">
                 <i class="bi bi-bell fs-5 text-muted"></i>
                 <span
@@ -169,21 +154,23 @@
         <div class="col-lg-8">
             <div class="card card-chart bg-white h-100">
                 <div class="card-body p-4">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div
+                        class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
                         <div>
-                            <h5 class="fw-bold mb-1">Weekly Trends: Rides vs. Earnings</h5>
-                            <small class="text-muted">Comparing volume of rides against earnings revenue</small>
+                            <h5 class="fw-bold mb-1">Weekly Trends</h5>
+                            <small class="text-muted">Rides vs Earnings comparison over time</small>
                         </div>
-                        <div class="btn-group btn-group-sm" role="group" id="performanceFilters">
-                            <button type="button" class="btn btn-outline-secondary active"
+                        <div class="d-flex flex-wrap gap-1" role="group" id="performanceFilters">
+                            <button type="button" class="btn btn-sm btn-outline-secondary active"
                                 data-filter="weekly">Weekly</button>
-                            <button type="button" class="btn btn-outline-secondary"
+                            <button type="button" class="btn btn-sm btn-outline-secondary"
                                 data-filter="monthly">Monthly</button>
-                            <button type="button" class="btn btn-outline-secondary" data-filter="3months">3
+                            <button type="button" class="btn btn-sm btn-outline-secondary" data-filter="3months">3
                                 Months</button>
-                            <button type="button" class="btn btn-outline-secondary" data-filter="6months">6
+                            <button type="button" class="btn btn-sm btn-outline-secondary" data-filter="6months">6
                                 Months</button>
-                            <button type="button" class="btn btn-outline-secondary" data-filter="1year">Annual</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary"
+                                data-filter="1year">Annual</button>
                         </div>
                     </div>
                     <div id="performanceChart" style="min-height: 350px;"></div>
@@ -226,22 +213,25 @@
         <div class="col-12">
             <div class="card card-chart bg-white h-100 border-0 shadow-sm" style="border-radius: 12px;">
                 <div class="card-body p-4">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div
+                        class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
                         <div>
                             <h5 class="fw-bold mb-1">Revenue Stream</h5>
                             <small class="text-muted">Detailed breakdown of income sources over time</small>
                         </div>
-                        <div class="btn-group btn-group-sm" role="group" id="revenueFilters">
-                            <button type="button" class="btn btn-outline-secondary" data-filter="daily">Daily</button>
-                            <button type="button" class="btn btn-outline-secondary active"
+                        <div class="d-flex flex-wrap gap-1" role="group" id="revenueFilters">
+                            <button type="button" class="btn btn-sm btn-outline-secondary"
+                                data-filter="daily">Daily</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary active"
                                 data-filter="weekly">Weekly</button>
-                            <button type="button" class="btn btn-outline-secondary"
+                            <button type="button" class="btn btn-sm btn-outline-secondary"
                                 data-filter="monthly">Monthly</button>
-                            <button type="button" class="btn btn-outline-secondary" data-filter="3months">3
+                            <button type="button" class="btn btn-sm btn-outline-secondary" data-filter="3months">3
                                 Months</button>
-                            <button type="button" class="btn btn-outline-secondary" data-filter="6months">6
+                            <button type="button" class="btn btn-sm btn-outline-secondary" data-filter="6months">6
                                 Months</button>
-                            <button type="button" class="btn btn-outline-secondary" data-filter="1year">Annual</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary"
+                                data-filter="1year">Annual</button>
                         </div>
                     </div>
                     <div id="fullRevenueChart" style="min-height: 250px;"></div>
@@ -256,7 +246,7 @@
         <div class="col-xl-4 col-lg-4">
             <div class="card card-chart bg-white h-100 border-0 shadow-sm" style="border-radius: 12px;">
                 <div
-                    class="card-header bg-transparent border-0 pt-4 px-4 pb-2 d-flex justify-content-between align-items-center">
+                    class="card-header bg-transparent border-0 pt-4 px-4 pb-2 d-flex flex-wrap justify-content-between align-items-center gap-2">
                     <h5 class="fw-bold mb-0">Top Riders</h5>
                     <a href="#" class="text-decoration-none small fw-bold text-primary">View All</a>
                 </div>
@@ -271,8 +261,8 @@
                                     class="position-absolute top-0 start-100 translate-middle p-1 bg-warning border border-light rounded-circle"
                                     style="width: 12px; height: 12px;"></span>
                             </div>
-                            <div class="flex-grow-1">
-                                <h6 class="fw-bold mb-0 text-dark">Alex Johnson</h6>
+                            <div class="flex-grow-1 text-truncate">
+                                <h6 class="fw-bold mb-0 text-dark text-truncate">Alex Johnson</h6>
                                 <small class="text-success fw-bold text-uppercase"
                                     style="font-size: 0.7rem; letter-spacing: 0.5px;">Active</small>
                             </div>
@@ -288,8 +278,8 @@
                                     class="d-flex align-items-center justify-content-center rounded-circle bg-light fw-bold text-dark border"
                                     style="width: 45px; height: 45px; font-size: 0.85rem;">R2</span>
                             </div>
-                            <div class="flex-grow-1">
-                                <h6 class="fw-bold mb-0 text-dark">Jordan Smith</h6>
+                            <div class="flex-grow-1 text-truncate">
+                                <h6 class="fw-bold mb-0 text-dark text-truncate">Jordan Smith</h6>
                                 <small class="text-success fw-bold text-uppercase"
                                     style="font-size: 0.7rem; letter-spacing: 0.5px;">Active</small>
                             </div>
@@ -305,8 +295,8 @@
                                     class="d-flex align-items-center justify-content-center rounded-circle bg-light fw-bold text-dark border"
                                     style="width: 45px; height: 45px; font-size: 0.85rem;">R3</span>
                             </div>
-                            <div class="flex-grow-1">
-                                <h6 class="fw-bold mb-0 text-dark">Mila Kunis</h6>
+                            <div class="flex-grow-1 text-truncate">
+                                <h6 class="fw-bold mb-0 text-dark text-truncate">Mila Kunis</h6>
                                 <small class="text-success fw-bold text-uppercase"
                                     style="font-size: 0.7rem; letter-spacing: 0.5px;">Active</small>
                             </div>
@@ -325,7 +315,7 @@
         <div class="col-xl-4 col-lg-4">
             <div class="card card-chart bg-white h-100 border-0 shadow-sm" style="border-radius: 12px;">
                 <div
-                    class="card-header bg-transparent border-0 pt-4 px-4 pb-2 d-flex justify-content-between align-items-center">
+                    class="card-header bg-transparent border-0 pt-4 px-4 pb-2 d-flex flex-wrap justify-content-between align-items-center gap-2">
                     <h5 class="fw-bold mb-0">Needs Attention: Riders</h5>
                     <span class="badge bg-danger bg-opacity-10 text-danger text-uppercase fw-bold letter-spacing-1 p-2"
                         style="font-size: 0.65rem;">Action Required</span>
@@ -338,9 +328,10 @@
                                     class="d-flex align-items-center justify-content-center rounded-circle text-white fw-bold"
                                     style="width: 45px; height: 45px; font-size: 0.9rem; background: #FF5A5F;">P1</span>
                             </div>
-                            <div class="flex-grow-1">
-                                <h6 class="fw-bold mb-0 text-dark">Sarah Connor</h6>
-                                <small class="text-danger fw-bold" style="font-size: 0.7rem;">0 Rides (7 Days)</small>
+                            <div class="flex-grow-1 text-truncate">
+                                <h6 class="fw-bold mb-0 text-dark text-truncate">Sarah Connor</h6>
+                                <small class="text-danger fw-bold text-truncate" style="font-size: 0.7rem;">0 Rides (7
+                                    Days)</small>
                             </div>
                             <button class="btn btn-sm btn-outline-secondary rounded-pill px-3 py-1 fw-bold"
                                 style="font-size: 0.8rem;">View</button>
@@ -351,9 +342,10 @@
                                     class="d-flex align-items-center justify-content-center rounded-circle text-white fw-bold"
                                     style="width: 45px; height: 45px; font-size: 0.9rem; background: #FF5A5F;">P2</span>
                             </div>
-                            <div class="flex-grow-1">
-                                <h6 class="fw-bold mb-0 text-dark">John Wick</h6>
-                                <small class="text-danger fw-bold" style="font-size: 0.7rem;">0 Rides (7 Days)</small>
+                            <div class="flex-grow-1 text-truncate">
+                                <h6 class="fw-bold mb-0 text-dark text-truncate">John Wick</h6>
+                                <small class="text-danger fw-bold text-truncate" style="font-size: 0.7rem;">0 Rides (7
+                                    Days)</small>
                             </div>
                             <button class="btn btn-sm btn-outline-secondary rounded-pill px-3 py-1 fw-bold"
                                 style="font-size: 0.8rem;">View</button>
@@ -364,9 +356,10 @@
                                     class="d-flex align-items-center justify-content-center rounded-circle text-white fw-bold"
                                     style="width: 45px; height: 45px; font-size: 0.9rem; background: #FF8A8E;">P3</span>
                             </div>
-                            <div class="flex-grow-1">
-                                <h6 class="fw-bold mb-0 text-dark">Rick Deckard</h6>
-                                <small class="text-danger fw-bold" style="font-size: 0.7rem;">0 Rides (7 Days)</small>
+                            <div class="flex-grow-1 text-truncate">
+                                <h6 class="fw-bold mb-0 text-dark text-truncate">Rick Deckard</h6>
+                                <small class="text-danger fw-bold text-truncate" style="font-size: 0.7rem;">0 Rides (7
+                                    Days)</small>
                             </div>
                             <button class="btn btn-sm btn-outline-secondary rounded-pill px-3 py-1 fw-bold"
                                 style="font-size: 0.8rem;">View</button>
@@ -380,7 +373,7 @@
         <div class="col-xl-4 col-lg-4">
             <div class="card card-chart bg-white h-100 border-0 shadow-sm" style="border-radius: 12px;">
                 <div
-                    class="card-header bg-transparent border-0 pt-4 px-4 pb-2 d-flex justify-content-between align-items-center">
+                    class="card-header bg-transparent border-0 pt-4 px-4 pb-2 d-flex flex-wrap justify-content-between align-items-center gap-2">
                     <h5 class="fw-bold mb-0">Needs Attention:<br>Tenants</h5>
                     <span class="badge text-uppercase fw-bold letter-spacing-1 p-2 text-start"
                         style="font-size: 0.65rem; background: #E6F8F5; color: #13BFA6;">Payment<br>Overdue</span>
@@ -395,13 +388,14 @@
                                     style="width: 40px; height: 40px; border-radius: 8px; font-size: 0.85rem; background: #13BFA6;">{{
                                     tenant.initials }}</span>
                             </div>
-                            <div class="flex-grow-1">
-                                <h6 class="fw-bold mb-0 text-dark fn-sm">{{ tenant.name }}</h6>
-                                <small class="text-danger fw-bold text-uppercase" style="font-size: 0.65rem;">{{
+                            <div class="flex-grow-1 text-truncate pe-2">
+                                <h6 class="fw-bold mb-0 text-dark fn-sm text-truncate">{{ tenant.name }}</h6>
+                                <small class="text-danger fw-bold text-uppercase text-truncate"
+                                    style="font-size: 0.65rem;">{{
                                     tenant.overdue_days }} Days Overdue</small>
                             </div>
-                            <button class="btn text-white rounded px-3 py-1 fw-bold shadow-sm"
-                                style="font-size: 0.75rem; background: #13BFA6;">Send Reminder</button>
+                            <button class="btn text-white rounded px-2 px-md-3 py-1 fw-bold shadow-sm flex-shrink-0"
+                                style="font-size: 0.7rem; background: #13BFA6;">Send Reminder</button>
                         </div>
                         {% endfor %}
                     </div>
@@ -418,55 +412,12 @@
 <!-- Popperjs -->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
     crossorigin="anonymous"></script>
-<!-- Tempus Dominus JavaScript -->
-<script src="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.9.4/dist/js/tempus-dominus.min.js"
-    crossorigin="anonymous"></script>
 
 <!-- ApexCharts CDN -->
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        // --- 0. Date Picker Initialization ---
-        const dashboardPickerEl = document.getElementById('dashboardDatePicker');
-        if (dashboardPickerEl) {
-            const picker = new tempusDominus.TempusDominus(dashboardPickerEl, {
-                localization: {
-                    format: 'MMM dd, yyyy'
-                },
-                display: {
-                    components: {
-                        clock: false,
-                        hours: false,
-                        minutes: false,
-                        seconds: false
-                    },
-                    icons: {
-                        type: 'icons',
-                        time: 'bi bi-clock',
-                        date: 'bi bi-calendar',
-                        up: 'bi bi-arrow-up',
-                        down: 'bi bi-arrow-down',
-                        previous: 'bi bi-chevron-left',
-                        next: 'bi bi-chevron-right',
-                        today: 'bi bi-calendar-check',
-                        clear: 'bi bi-trash',
-                        close: 'bi bi-x'
-                    }
-                }
-            });
-            // Set to today's date
-            picker.dates.setValue(new tempusDominus.DateTime());
-
-            // Open the datepicker when the readonly input is clicked
-            const dateInput = document.getElementById('dateInput');
-            if (dateInput) {
-                dateInput.addEventListener('click', () => {
-                    const icon = document.querySelector('#dashboardDatePicker .input-group-text');
-                    if (icon) icon.click();
-                });
-            }
-        }
 
         // --- 1. Performance Analytics (Area Chart) ---
         // Hardcoded Data Sets
