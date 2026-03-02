@@ -34,7 +34,7 @@
     <div class="card-body p-2">
         <div class="row align-items-center">
             <div class="col-md-5">
-                <form method="GET" action="{% url 'tenants' %}">
+                <form method="GET" action="{% url 'tenants' %}" class="live-search-form">
                     <div class="input-group">
                         <span class="input-group-text bg-transparent border-0"><i class="bi bi-search"></i></span>
                         <input type="text" name="q" class="form-control border-0"
@@ -58,108 +58,125 @@
     </div>
 </div>
 
-<div class="row g-4">
-    {% for tenant in tenants %}
-    <div class="col-md-6 col-lg-4 col-xl-3">
-        <div class="card h-100 shadow-sm border-0">
-            <div class="card-body">
-                <!-- Header -->
-                <div class="d-flex justify-content-between align-items-start mb-3">
-                    <div class="d-flex align-items-center">
-                        <div class="position-relative">
-                            <img src="https://ui-avatars.com/api/?name={{ tenant.full_name|urlencode }}&background=6f42c1&color=fff"
-                                alt="{{ tenant.full_name }}" class="rounded-circle" width="50" height="50">
-                            <span
-                                class="position-absolute bottom-0 end-0 p-1 bg-{{ tenant.is_active|yesno:'success,danger' }} border border-white rounded-circle"></span>
+<!-- RESULTS CONTAINER for AJAX -->
+<div id="results-container">
+    <div class="row g-4">
+        {% for tenant in tenants %}
+        <div class="col-md-6 col-lg-4 col-xl-3">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body">
+                    <!-- Header -->
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class="position-relative">
+                                <img src="https://ui-avatars.com/api/?name={{ tenant.full_name|urlencode }}&background=6f42c1&color=fff"
+                                    alt="{{ tenant.full_name }}" class="rounded-circle" width="50" height="50">
+                                <span
+                                    class="position-absolute bottom-0 end-0 p-1 bg-{{ tenant.is_active|yesno:'success,danger' }} border border-white rounded-circle"></span>
+                            </div>
+                            <div class="ms-3">
+                                <h6 class="fw-bold mb-0 text-truncate" style="max-width: 140px;"
+                                    title="{{ tenant.full_name }}">
+                                    {{ tenant.full_name }}
+                                </h6>
+                                <small class="text-muted" style="font-size: 0.8rem;">
+                                    {{ tenant.email|truncatechars:20 }}
+                                </small>
+                            </div>
                         </div>
-                        <div class="ms-3">
-                            <h6 class="fw-bold mb-0 text-truncate" style="max-width: 140px;"
-                                title="{{ tenant.full_name }}">
-                                {{ tenant.full_name }}
-                            </h6>
-                            <small class="text-muted" style="font-size: 0.8rem;">
-                                {{ tenant.email|truncatechars:20 }}
-                            </small>
+                    </div>
+
+                    <!-- Info -->
+                    <div class="row text-center mt-3 mb-3 g-0">
+                        <div class="col-6 border-end">
+                            <p class="mb-0 text-muted small text-uppercase fw-bold" style="font-size: 0.7rem;">PHONE</p>
+                            <p class="fw-bold mb-0 small">{{ tenant.phone|default:"-" }}</p>
+                        </div>
+                        <div class="col-6">
+                            <p class="mb-0 text-muted small text-uppercase fw-bold" style="font-size: 0.7rem;">JOINED
+                            </p>
+                            <p class="fw-bold mb-0 small">{{ tenant.date_joined|date:"M d, Y" }}</p>
                         </div>
                     </div>
-                </div>
 
-                <!-- Info -->
-                <div class="row text-center mt-3 mb-3 g-0">
-                    <div class="col-6 border-end">
-                        <p class="mb-0 text-muted small text-uppercase fw-bold" style="font-size: 0.7rem;">PHONE</p>
-                        <p class="fw-bold mb-0 small">{{ tenant.phone|default:"-" }}</p>
+                    <!-- Footer Badges -->
+                    <div class="d-flex justify-content-between align-items-center mt-auto">
+                        <span
+                            class="badge bg-{{ tenant.is_active|yesno:'success,danger' }} bg-opacity-10 text-{{ tenant.is_active|yesno:'success,danger' }} fw-medium px-2 py-1">
+                            {{ tenant.is_active|yesno:"Active,Inactive" }}
+                        </span>
+                        <span class="badge bg-secondary bg-opacity-10 text-secondary fw-medium px-2 py-1">
+                            {{ tenant.address|truncatechars:20|default:"No Address" }}
+                        </span>
                     </div>
-                    <div class="col-6">
-                        <p class="mb-0 text-muted small text-uppercase fw-bold" style="font-size: 0.7rem;">JOINED</p>
-                        <p class="fw-bold mb-0 small">{{ tenant.date_joined|date:"M d, Y" }}</p>
-                    </div>
-                </div>
-
-                <!-- Footer Badges -->
-                <div class="d-flex justify-content-between align-items-center mt-auto">
-                    <span
-                        class="badge bg-{{ tenant.is_active|yesno:'success,danger' }} bg-opacity-10 text-{{ tenant.is_active|yesno:'success,danger' }} fw-medium px-2 py-1">
-                        {{ tenant.is_active|yesno:"Active,Inactive" }}
-                    </span>
-                    <span class="badge bg-secondary bg-opacity-10 text-secondary fw-medium px-2 py-1">
-                        {{ tenant.address|truncatechars:20|default:"No Address" }}
-                    </span>
                 </div>
             </div>
         </div>
-    </div>
-    {% empty %}
-    <div class="col-12 text-center py-5">
-        <h4 class="text-muted">No tenants found.</h4>
-    </div>
-    {% endfor %}
-</div>
-
-<!-- Pagination -->
-{% if tenants.has_other_pages %}
-<nav aria-label="Page navigation" class="mt-5 d-flex justify-content-between align-items-center">
-    <p class="text-muted mb-0">
-        Showing <strong>{{ tenants.start_index }}</strong> to <strong>{{ tenants.end_index }}</strong> of <strong>{{
-            tenants.paginator.count }}</strong> results
-    </p>
-    <ul class="pagination mb-0">
-        {% if tenants.has_previous %}
-        <li class="page-item">
-            <a class="page-link"
-                href="?page={{ tenants.previous_page_number }}&q={{ search_query }}&sort={{ sort_option }}">
-                <i class="bi bi-chevron-left"></i>
-            </a>
-        </li>
-        {% else %}
-        <li class="page-item disabled">
-            <a class="page-link" href="#" tabindex="-1" aria-disabled="true"><i class="bi bi-chevron-left"></i></a>
-        </li>
-        {% endif %}
-
-        {% for i in tenants.paginator.page_range %}
-        {% if tenants.number == i %}
-        <li class="page-item active"><a class="page-link" href="#">{{ i }}</a></li>
-        {% elif i > tenants.number|add:'-3' and i < tenants.number|add:'3' %} <li class="page-item">
-            <a class="page-link" href="?page={{ i }}&q={{ search_query }}&sort={{ sort_option }}">{{ i }}</a>
-            </li>
+        {% empty %}
+        <div class="col-12 py-5 text-center bg-white rounded-3 shadow-sm border-0">
+            <i class="bi bi-person-badge display-1 text-muted opacity-25 mb-3"></i>
+            <h4 class="fw-bold text-dark">No tenants found</h4>
+            <p class="text-muted mb-4">
+                {% if search_query %}
+                No tenants match your search "<strong>{{ search_query }}</strong>".
+                {% else %}
+                You haven't registered any tenants yet.
+                {% endif %}
+            </p>
+            {% if search_query %}
+            <a href="{% url 'tenants' %}" class="btn btn-outline-secondary">Clear Search</a>
+            {% else %}
+            <a href="{% url 'register_tenant' %}" class="btn btn-primary">Add Your First Tenant</a>
             {% endif %}
-            {% endfor %}
+        </div>
+        {% endfor %}
+    </div>
 
-            {% if tenants.has_next %}
+    <!-- Pagination -->
+    {% if tenants.has_other_pages %}
+    <nav aria-label="Page navigation" class="mt-5 d-flex justify-content-between align-items-center">
+        <p class="text-muted mb-0">
+            Showing <strong>{{ tenants.start_index }}</strong> to <strong>{{ tenants.end_index }}</strong> of <strong>{{
+                tenants.paginator.count }}</strong> results
+        </p>
+        <ul class="pagination mb-0">
+            {% if tenants.has_previous %}
             <li class="page-item">
                 <a class="page-link"
-                    href="?page={{ tenants.next_page_number }}&q={{ search_query }}&sort={{ sort_option }}">
-                    <i class="bi bi-chevron-right"></i>
+                    href="?page={{ tenants.previous_page_number }}&q={{ search_query }}&sort={{ sort_option }}">
+                    <i class="bi bi-chevron-left"></i>
                 </a>
             </li>
             {% else %}
             <li class="page-item disabled">
-                <a class="page-link" href="#" tabindex="-1" aria-disabled="true"><i class="bi bi-chevron-right"></i></a>
+                <a class="page-link" href="#" tabindex="-1" aria-disabled="true"><i class="bi bi-chevron-left"></i></a>
             </li>
             {% endif %}
-    </ul>
-</nav>
-{% endif %}
 
+            {% for i in tenants.paginator.page_range %}
+            {% if tenants.number == i %}
+            <li class="page-item active"><a class="page-link" href="#">{{ i }}</a></li>
+            {% elif i > tenants.number|add:'-3' and i < tenants.number|add:'3' %} <li class="page-item">
+                <a class="page-link" href="?page={{ i }}&q={{ search_query }}&sort={{ sort_option }}">{{ i }}</a>
+                </li>
+                {% endif %}
+                {% endfor %}
+
+                {% if tenants.has_next %}
+                <li class="page-item">
+                    <a class="page-link"
+                        href="?page={{ tenants.next_page_number }}&q={{ search_query }}&sort={{ sort_option }}">
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true"><i
+                            class="bi bi-chevron-right"></i></a>
+                </li>
+                {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
 {% endblock %}

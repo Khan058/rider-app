@@ -1,0 +1,105 @@
+{% extends 'administration/base.html' %}
+
+{% block title %}Register New Bike - Rider Admin{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-5">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div>
+                            <h2 class="fw-bold mb-1">Register Bike</h2>
+                            <p class="text-muted mb-0">Add a new bike to the fleet</p>
+                        </div>
+                        <a href="{% url 'bikes_list' %}" class="btn btn-outline-secondary btn-sm">
+                            <i class="bi bi-x-lg"></i> Cancel
+                        </a>
+                    </div>
+
+                    {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        <i
+                            class="bi {% if message.tags == 'success' %}bi-check-circle{% elif message.tags == 'danger' %}bi-exclamation-triangle{% else %}bi-info-circle{% endif %} me-2"></i>
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+
+                    <form method="POST">
+                        {% csrf_token %}
+
+                        <div class="mb-4">
+                            <h5 class="text-primary mb-3"><i class="bi bi-bicycle me-2"></i>Bike Details</h5>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Bike Model</label>
+                                    <input type="text"
+                                        class="form-control {% if form.model.errors %}is-invalid{% endif %}"
+                                        name="model" value="{{ form.model.value|default_if_none:'' }}"
+                                        placeholder="e.g. Honda CD70" required>
+                                    {% if form.model.errors %}
+                                    <div class="invalid-feedback">{{ form.model.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Registration Number</label>
+                                    <input type="text"
+                                        class="form-control text-uppercase font-monospace {% if form.registration.errors %}is-invalid{% endif %}"
+                                        name="registration" value="{{ form.registration.value|default_if_none:'' }}"
+                                        placeholder="e.g. DXB-12345" required>
+                                    {% if form.registration.errors %}
+                                    <div class="invalid-feedback">{{ form.registration.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <h5 class="text-primary mb-3"><i class="bi bi-person-badge me-2"></i>Rider Assignment</h5>
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <label class="form-label">Assign Rider (Optional)</label>
+                                    <select class="form-select {% if form.rider.errors %}is-invalid{% endif %}"
+                                        name="rider">
+                                        <option value="">— Unassigned —</option>
+                                        {% for r in available_riders %}
+                                        {% if form.rider.value == r.id|stringformat:"s" %}
+                                        <option value="{{ r.id }}" selected>
+                                            {{ r.full_name }} ({{ r.email }})
+                                        </option>
+                                        {% else %}
+                                        <option value="{{ r.id }}">
+                                            {{ r.full_name }} ({{ r.email }})
+                                        </option>
+                                        {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                    {% if form.rider.errors %}
+                                    <div class="invalid-feedback">{{ form.rider.errors.0 }}</div>
+                                    {% else %}
+                                    <div class="form-text mt-2"><i class="bi bi-info-circle me-1"></i>You can assign a
+                                        rider now or do it later from the edit page.</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="my-4 text-muted">
+
+                        <div class="d-flex justify-content-end gap-2">
+                            <a href="{% url 'bikes_list' %}" class="btn btn-light text-muted px-4">Cancel</a>
+                            <button type="submit" class="btn btn-primary px-4">
+                                Register Bike <i class="bi bi-check-circle-fill ms-2"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

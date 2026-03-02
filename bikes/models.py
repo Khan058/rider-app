@@ -9,7 +9,7 @@ class Bike(models.Model):
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='bikes'
+        related_name='bikes', limit_choices_to={'user_type': 'RIDER'},
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

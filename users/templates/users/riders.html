@@ -34,7 +34,7 @@
     <div class="card-body p-2">
         <div class="row align-items-center">
             <div class="col-md-5">
-                <form method="GET" action="{% url 'riders' %}">
+                <form method="GET" action="{% url 'riders' %}" class="live-search-form">
                     <div class="input-group">
                         <span class="input-group-text bg-transparent border-0"><i class="bi bi-search"></i></span>
                         <input type="text" name="q" class="form-control border-0"
@@ -65,109 +65,126 @@
     </div>
 </div>
 
-<div class="row g-4">
-    {% for rider in riders %}
-    <div class="col-md-6 col-lg-4 col-xl-3">
-        <div class="card h-100 shadow-sm border-0">
-            <div class="card-body">
-                <!-- Header -->
-                <div class="d-flex justify-content-between align-items-start mb-3">
-                    <div class="d-flex align-items-center">
-                        <div class="position-relative">
-                            <!-- Mock Avatar using UI Avatars -->
-                            <img src="https://ui-avatars.com/api/?name={{ rider.full_name|urlencode }}&background=0D6EFD&color=fff"
-                                alt="{{ rider.full_name }}" class="rounded-circle" width="50" height="50">
-                            <span
-                                class="position-absolute bottom-0 end-0 p-1 bg-{{ rider.is_active|yesno:'success,danger' }} border border-white rounded-circle"></span>
+<!-- RESULTS CONTAINER for AJAX -->
+<div id="results-container">
+    <div class="row g-4">
+        {% for rider in riders %}
+        <div class="col-md-6 col-lg-4 col-xl-3">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body">
+                    <!-- Header -->
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class="position-relative">
+                                <!-- Mock Avatar using UI Avatars -->
+                                <img src="https://ui-avatars.com/api/?name={{ rider.full_name|urlencode }}&background=0D6EFD&color=fff"
+                                    alt="{{ rider.full_name }}" class="rounded-circle" width="50" height="50">
+                                <span
+                                    class="position-absolute bottom-0 end-0 p-1 bg-{{ rider.is_active|yesno:'success,danger' }} border border-white rounded-circle"></span>
+                            </div>
+                            <div class="ms-3">
+                                <h6 class="fw-bold mb-0 text-truncate" style="max-width: 140px;"
+                                    title="{{ rider.full_name }}">
+                                    {{ rider.full_name }}
+                                </h6>
+                                <small class="text-muted" style="font-size: 0.8rem;">
+                                    {{ rider.email|truncatechars:20 }}
+                                </small>
+                            </div>
                         </div>
-                        <div class="ms-3">
-                            <h6 class="fw-bold mb-0 text-truncate" style="max-width: 140px;"
-                                title="{{ rider.full_name }}">
-                                {{ rider.full_name }}
-                            </h6>
-                            <small class="text-muted" style="font-size: 0.8rem;">
-                                {{ rider.email|truncatechars:20 }}
-                            </small>
+                    </div>
+
+                    <!-- Stats (Mocked) -->
+                    <div class="row text-center mt-3 mb-3 g-0">
+                        <div class="col-6 border-end">
+                            <p class="mb-0 text-muted small text-uppercase fw-bold" style="font-size: 0.7rem;">RIDES</p>
+                            <h5 class="fw-bold mb-0">{{ rider.rides_count }}</h5>
+                        </div>
+                        <div class="col-6">
+                            <p class="mb-0 text-muted small text-uppercase fw-bold" style="font-size: 0.7rem;">EARNED
+                            </p>
+                            <h5 class="fw-bold mb-0 text-primary">${{ rider.total_earnings }}</h5>
                         </div>
                     </div>
-                </div>
 
-                <!-- Stats (Mocked) -->
-                <div class="row text-center mt-3 mb-3 g-0">
-                    <div class="col-6 border-end">
-                        <p class="mb-0 text-muted small text-uppercase fw-bold" style="font-size: 0.7rem;">RIDES</p>
-                        <h5 class="fw-bold mb-0">{{ rider.rides_count }}</h5>
+                    <!-- Footer Badges -->
+                    <div class="d-flex justify-content-between align-items-center mt-auto">
+                        <span
+                            class="badge bg-{{ rider.is_active|yesno:'success,danger' }} bg-opacity-10 text-{{ rider.is_active|yesno:'success,danger' }} fw-medium px-2 py-1">
+                            {{ rider.is_active|yesno:"Active,Inactive" }}
+                        </span>
+                        <span class="badge bg-secondary bg-opacity-10 text-secondary fw-medium px-2 py-1">
+                            {{ rider.license_number|default:"No License" }}
+                        </span>
                     </div>
-                    <div class="col-6">
-                        <p class="mb-0 text-muted small text-uppercase fw-bold" style="font-size: 0.7rem;">EARNED</p>
-                        <h5 class="fw-bold mb-0 text-primary">${{ rider.total_earnings }}</h5>
-                    </div>
-                </div>
-
-                <!-- Footer Badges -->
-                <div class="d-flex justify-content-between align-items-center mt-auto">
-                    <span
-                        class="badge bg-{{ rider.is_active|yesno:'success,danger' }} bg-opacity-10 text-{{ rider.is_active|yesno:'success,danger' }} fw-medium px-2 py-1">
-                        {{ rider.is_active|yesno:"Active,Inactive" }}
-                    </span>
-                    <span class="badge bg-secondary bg-opacity-10 text-secondary fw-medium px-2 py-1">
-                        {{ rider.license_number|default:"No License" }}
-                    </span>
                 </div>
             </div>
         </div>
-    </div>
-    {% empty %}
-    <div class="col-12 text-center py-5">
-        <h4 class="text-muted">No riders found.</h4>
-    </div>
-    {% endfor %}
-</div>
-
-<!-- Pagination -->
-{% if riders.has_other_pages %}
-<nav aria-label="Page navigation" class="mt-5 d-flex justify-content-between align-items-center">
-    <p class="text-muted mb-0">
-        Showing <strong>{{ riders.start_index }}</strong> to <strong>{{ riders.end_index }}</strong> of <strong>{{
-            riders.paginator.count }}</strong> results
-    </p>
-    <ul class="pagination mb-0">
-        {% if riders.has_previous %}
-        <li class="page-item">
-            <a class="page-link"
-                href="?page={{ riders.previous_page_number }}&q={{ search_query }}&sort={{ sort_option }}">
-                <i class="bi bi-chevron-left"></i>
-            </a>
-        </li>
-        {% else %}
-        <li class="page-item disabled">
-            <a class="page-link" href="#" tabindex="-1" aria-disabled="true"><i class="bi bi-chevron-left"></i></a>
-        </li>
-        {% endif %}
-
-        {% for i in riders.paginator.page_range %}
-        {% if riders.number == i %}
-        <li class="page-item active"><a class="page-link" href="#">{{ i }}</a></li>
-        {% elif i > riders.number|add:'-3' and i < riders.number|add:'3' %} <li class="page-item">
-            <a class="page-link" href="?page={{ i }}&q={{ search_query }}&sort={{ sort_option }}">{{ i }}</a>
-            </li>
+        {% empty %}
+        <div class="col-12 py-5 text-center bg-white rounded-3 shadow-sm border-0">
+            <i class="bi bi-people display-1 text-muted opacity-25 mb-3"></i>
+            <h4 class="fw-bold text-dark">No riders found</h4>
+            <p class="text-muted mb-4">
+                {% if search_query %}
+                No riders match your search "<strong>{{ search_query }}</strong>".
+                {% else %}
+                You haven't added any riders to your fleet yet.
+                {% endif %}
+            </p>
+            {% if search_query %}
+            <a href="{% url 'riders' %}" class="btn btn-outline-secondary">Clear Search</a>
+            {% else %}
+            <a href="{% url 'register_rider' %}" class="btn btn-primary">Add Your First Rider</a>
             {% endif %}
-            {% endfor %}
+        </div>
+        {% endfor %}
+    </div>
 
-            {% if riders.has_next %}
+    <!-- Pagination -->
+    {% if riders.has_other_pages %}
+    <nav aria-label="Page navigation" class="mt-5 d-flex justify-content-between align-items-center">
+        <p class="text-muted mb-0">
+            Showing <strong>{{ riders.start_index }}</strong> to <strong>{{ riders.end_index }}</strong> of <strong>{{
+                riders.paginator.count }}</strong> results
+        </p>
+        <ul class="pagination mb-0">
+            {% if riders.has_previous %}
             <li class="page-item">
                 <a class="page-link"
-                    href="?page={{ riders.next_page_number }}&q={{ search_query }}&sort={{ sort_option }}">
-                    <i class="bi bi-chevron-right"></i>
+                    href="?page={{ riders.previous_page_number }}&q={{ search_query }}&sort={{ sort_option }}">
+                    <i class="bi bi-chevron-left"></i>
                 </a>
             </li>
             {% else %}
             <li class="page-item disabled">
-                <a class="page-link" href="#" tabindex="-1" aria-disabled="true"><i class="bi bi-chevron-right"></i></a>
+                <a class="page-link" href="#" tabindex="-1" aria-disabled="true"><i class="bi bi-chevron-left"></i></a>
             </li>
             {% endif %}
-    </ul>
-</nav>
-{% endif %}
 
+            {% for i in riders.paginator.page_range %}
+            {% if riders.number == i %}
+            <li class="page-item active"><a class="page-link" href="#">{{ i }}</a></li>
+            {% elif i > riders.number|add:'-3' and i < riders.number|add:'3' %} <li class="page-item">
+                <a class="page-link" href="?page={{ i }}&q={{ search_query }}&sort={{ sort_option }}">{{ i }}</a>
+                </li>
+                {% endif %}
+                {% endfor %}
+
+                {% if riders.has_next %}
+                <li class="page-item">
+                    <a class="page-link"
+                        href="?page={{ riders.next_page_number }}&q={{ search_query }}&sort={{ sort_option }}">
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true"><i
+                            class="bi bi-chevron-right"></i></a>
+                </li>
+                {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
 {% endblock %}

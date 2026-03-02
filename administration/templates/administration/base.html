@@ -59,7 +59,8 @@
                             </a>
                         </li>
                         <li class="nav-item w-100">
-                            <a href="#" class="nav-link text-white align-middle px-0">
+                            <a href="{% url 'bikes_list' %}"
+                                class="nav-link text-white align-middle px-0 {% if request.resolver_match.url_name == 'bikes_list' or request.resolver_match.url_name == 'register_bike' or request.resolver_match.url_name == 'edit_bike' %}active{% endif %}">
                                 <i class="fs-4 bi-bicycle ms-2"></i> <span class="ms-1 d-none d-sm-inline">Bikes</span>
                             </a>
                         </li>
@@ -135,6 +136,69 @@
                 // We might want to remove specific col classes if they conflict, 
                 // but col-md-3 with flex-nowrap usually works okay. 
                 // For smoother transition, we just rely on CSS width overrides.
+            });
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Reusable debounce function
+            const debounce = (func, wait) => {
+                let timeout;
+                return function (...args) {
+                    clearTimeout(timeout);
+                    timeout = setTimeout(() => func.apply(this, args), wait);
+                };
+            };
+
+            const forms = document.querySelectorAll('.live-search-form');
+            forms.forEach(form => {
+                const resultsContainer = document.getElementById('results-container');
+                if (!resultsContainer) return;
+
+                const submitForm = async () => {
+                    const formData = new FormData(form);
+                    const params = new URLSearchParams(formData);
+
+                    // Filter out empty params
+                    for (const [key, value] of [...params.entries()]) {
+                        if (!value) params.delete(key);
+                    }
+
+                    const actionUrl = `${form.action}?${params.toString()}`;
+
+                    // Update History URL
+                    window.history.pushState({}, '', actionUrl);
+
+                    try {
+                        const response = await fetch(actionUrl);
+                        if (!response.ok) throw new Error('Network response failed');
+
+                        const htmlString = await response.text();
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(htmlString, 'text/html');
+
+                        const newContainer = doc.getElementById('results-container');
+                        if (newContainer) {
+                            resultsContainer.innerHTML = newContainer.innerHTML;
+                        }
+                    } catch (error) {
+                        console.error('Search fetch failed:', error);
+                    }
+                };
+
+                const debouncedSubmit = debounce(submitForm, 300);
+
+                // Listen to standard input fields
+                form.addEventListener('input', (e) => {
+                    if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'SELECT') return;
+                    debouncedSubmit();
+                });
+
+                // Prevent actual form submission (page reload)
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    submitForm();
+                });
             });
         });
     </script>
