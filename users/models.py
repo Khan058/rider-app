@@ -6,6 +6,7 @@ class Custom_user(AbstractUser):
     USER_TYPE_CHOICES = [
         ('RIDER', 'Rider'),
         ('TENANT', 'Tenant'),
+        ('MAIDS', 'Maids'),
     ]
 
     # User type — determines which fields are relevant
